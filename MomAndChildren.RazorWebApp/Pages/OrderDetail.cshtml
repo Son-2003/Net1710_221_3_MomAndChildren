@@ -1,0 +1,61 @@
+﻿@page
+@model MomAndChildren.RazorWebApp.Pages.OrderDetailModel
+@{
+    ViewData["Title"] = "Category page";
+    var orderDetails = Model.OrderDetails;
+}
+<div class="text-center">
+    <h1 class="display-6">OrderDetail management</h1>
+</div>
+<form method="post">
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>OrderDetailId</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>UnitPrice</th>
+                <th>TotalPrice</th>
+            </tr>
+        </thead>
+        <tbody class="tblcategoryList">
+            @if (orderDetails.Count > 0)
+            {
+                foreach (var orderDetail in orderDetails)
+                {
+                    <tr>
+                        <td>@orderDetail.OrderDetailId</td>
+                        <td>@orderDetail.Product.ProductName</td>
+                        <td>
+                            <span class="quantity-display">@orderDetail.Quantity</span>
+                            <input type="number" name="orderDetails[@orderDetail.OrderDetailId]" value="@orderDetail.Quantity" class="form-control d-none" />
+                        </td>
+                        <td>@orderDetail.UnitPrice</td>
+                        <td>@orderDetail.TotalPrice</td>
+                        <td>
+                            <button type="submit" formaction="/OrderDetail?handler=Delete&orderDetailId=@orderDetail.OrderDetailId" class="btn btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <button type="button" id="btnUpdate" class="btn btn-primary" onclick="enableEditing()">Update</button>
+    <button type="submit" id="btnSave" class="btn btn-success d-none">Save</button>
+</form>
+
+
+@section Scripts {
+    <script>
+        function enableEditing() {
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.classList.remove('d-none');
+            });
+            document.querySelectorAll('.quantity-display').forEach(span => {
+                span.classList.add('d-none');
+            });
+            document.getElementById('btnUpdate').classList.add('d-none');
+            document.getElementById('btnSave').classList.remove('d-none');
+        }
+    </script>
+}
