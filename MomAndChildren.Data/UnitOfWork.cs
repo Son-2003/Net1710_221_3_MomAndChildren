@@ -22,7 +22,7 @@ namespace MomAndChildren.Data
 
         private BrandRepository _brand;
 
-        public UnitOfWork() 
+        public UnitOfWork()
         {
             _unitOfWorkContext = new Net1710_221_3_MomAndChildrenContext();
         }
@@ -31,7 +31,7 @@ namespace MomAndChildren.Data
         {
             get { return _orderDetail ??= new Repositories.OrderDetailRepository(); }
         }
-    public CategoryRepository CategoryRepository
+        public CategoryRepository CategoryRepository
         {
             get { return _category ??= new Repositories.CategoryRepository(); }
         }
@@ -124,7 +124,7 @@ namespace MomAndChildren.Data
             return result;
         }
 
-        
+
 
         #endregion
     }

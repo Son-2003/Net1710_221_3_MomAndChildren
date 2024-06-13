@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace MomAndChildren.Data.Models;
 
@@ -21,8 +22,6 @@ public partial class Net1710_221_3_MomAndChildrenContext : DbContext
 
     public virtual DbSet<Category> Categories { get; set; }
 
-    public virtual DbSet<Company> Companies { get; set; }
-
     public virtual DbSet<Customer> Customers { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
@@ -33,11 +32,18 @@ public partial class Net1710_221_3_MomAndChildrenContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public static string GetConnectionString(string connectionStringName)
     {
-        optionsBuilder.UseSqlServer("data source=LAPTOP-JQJSKQQD;initial catalog=Net1710_221_3_MomAndChildren;user id=sa;password=12345;Integrated Security=True;TrustServerCertificate=True");
-        base.OnConfiguring(optionsBuilder);
+        var config = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        string connectionString = config.GetConnectionString(connectionStringName);
+        return connectionString;
     }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,17 +55,23 @@ public partial class Net1710_221_3_MomAndChildrenContext : DbContext
             entity.Property(e => e.BrandName)
                 .IsRequired()
                 .HasMaxLength(50);
+            entity.Property(e => e.CreateAt).HasColumnType("datetime");
             entity.Property(e => e.CreateBy)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description)
                 .IsRequired()
                 .HasMaxLength(2000);
+            entity.Property(e => e.Image)
+                .IsRequired()
+                .IsUnicode(false);
+            entity.Property(e => e.Note)
+                .IsRequired()
+                .HasMaxLength(1000);
+            entity.Property(e => e.UpdateAt).HasColumnType("datetime");
             entity.Property(e => e.UpdateBy)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Category>(entity =>
@@ -70,41 +82,21 @@ public partial class Net1710_221_3_MomAndChildrenContext : DbContext
             entity.Property(e => e.CategoryName)
                 .IsRequired()
                 .HasMaxLength(50);
+            entity.Property(e => e.CreateAt).HasColumnType("datetime");
             entity.Property(e => e.CreateBy)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description)
                 .IsRequired()
                 .HasMaxLength(2000);
+            entity.Property(e => e.Image).IsRequired();
+            entity.Property(e => e.Note)
+                .IsRequired()
+                .HasMaxLength(1000);
+            entity.Property(e => e.UpdateAt).HasColumnType("datetime");
             entity.Property(e => e.UpdateBy)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<Company>(entity =>
-        {
-            entity.ToTable("Company");
-
-            entity.Property(e => e.CompanyId).HasColumnName("CompanyID");
-            entity.Property(e => e.Address)
-                .IsRequired()
-                .HasMaxLength(100);
-            entity.Property(e => e.Description)
-                .IsRequired()
-                .HasMaxLength(2000);
-            entity.Property(e => e.Name)
-                .IsRequired()
-                .HasMaxLength(100);
-            entity.Property(e => e.PhoneNumber)
-                .IsRequired()
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.TaxCode)
-                .IsRequired()
-                .HasMaxLength(20)
-                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Customer>(entity =>
@@ -115,16 +107,24 @@ public partial class Net1710_221_3_MomAndChildrenContext : DbContext
             entity.Property(e => e.Address)
                 .IsRequired()
                 .HasMaxLength(2000);
+            entity.Property(e => e.Bio)
+                .IsRequired()
+                .HasMaxLength(2000);
+            entity.Property(e => e.CreateAt).HasColumnType("date");
             entity.Property(e => e.CustomerName)
                 .IsRequired()
                 .HasMaxLength(50);
             entity.Property(e => e.Dob)
                 .HasColumnType("date")
                 .HasColumnName("DOB");
+            entity.Property(e => e.Email)
+                .IsRequired()
+                .HasMaxLength(50);
             entity.Property(e => e.PhoneNumber)
                 .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
+                .HasMaxLength(20)
+                .IsFixedLength();
+            entity.Property(e => e.UpdateAt).HasColumnType("date");
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -132,11 +132,17 @@ public partial class Net1710_221_3_MomAndChildrenContext : DbContext
             entity.ToTable("Order");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.CreateAt).HasColumnType("datetime");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-            entity.Property(e => e.OrderDate).HasColumnType("date");
+            entity.Property(e => e.OrderDate).HasColumnType("datetime");
+            entity.Property(e => e.OrderNote)
+                .IsRequired()
+                .HasMaxLength(1000);
             entity.Property(e => e.ShippingDate).HasColumnType("date");
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.ShippingMethod)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.UpdateAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CustomerId)
@@ -149,8 +155,16 @@ public partial class Net1710_221_3_MomAndChildrenContext : DbContext
             entity.ToTable("OrderDetail");
 
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
+            entity.Property(e => e.CreateAt).HasColumnType("datetime");
+            entity.Property(e => e.CreateBy)
+                .IsRequired()
+                .HasMaxLength(50);
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
+            entity.Property(e => e.UpdateAt).HasColumnType("datetime");
+            entity.Property(e => e.UpdateBy)
+                .IsRequired()
+                .HasMaxLength(50);
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
@@ -168,13 +182,22 @@ public partial class Net1710_221_3_MomAndChildrenContext : DbContext
             entity.ToTable("Payment");
 
             entity.Property(e => e.PaymentId).HasColumnName("PaymentID");
-            entity.Property(e => e.CreateDate).HasColumnType("date");
+            entity.Property(e => e.BillingAddress)
+                .IsRequired()
+                .HasMaxLength(2000);
+            entity.Property(e => e.CreateAt).HasColumnType("datetime");
+            entity.Property(e => e.Currency)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.Note)
+                .IsRequired()
+                .HasMaxLength(1000);
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
-            entity.Property(e => e.PaymentDate).HasColumnType("date");
+            entity.Property(e => e.PaymentDate).HasColumnType("datetime");
             entity.Property(e => e.PaymentMethod)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.UpdateDate).HasColumnType("date");
+            entity.Property(e => e.UpdateAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.Order).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.OrderId)
@@ -192,8 +215,8 @@ public partial class Net1710_221_3_MomAndChildrenContext : DbContext
             entity.Property(e => e.Description)
                 .IsRequired()
                 .HasMaxLength(2000);
-            entity.Property(e => e.ExpireDate).HasColumnType("date");
-            entity.Property(e => e.ManufacturingDate).HasColumnType("date");
+            entity.Property(e => e.ExpireDate).HasColumnType("datetime");
+            entity.Property(e => e.ManufacturingDate).HasColumnType("datetime");
             entity.Property(e => e.ProductName)
                 .IsRequired()
                 .HasMaxLength(50);

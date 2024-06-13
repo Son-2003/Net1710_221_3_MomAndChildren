@@ -13,15 +13,19 @@ public partial class Order
 
     public DateTime OrderDate { get; set; }
 
-    public DateTime ShippingDate { get; set; }
-
     public int TotalQuantity { get; set; }
 
+    public DateTime ShippingDate { get; set; }
+
+    public string ShippingMethod { get; set; }
+
+    public string OrderNote { get; set; }
+
+    public DateTime CreateAt { get; set; }
+
+    public DateTime UpdateAt { get; set; }
+
     public int CustomerId { get; set; }
-
-    public DateTime CreateDate { get; set; }
-
-    public DateTime UpdateDate { get; set; }
 
     public virtual Customer Customer { get; set; }
 

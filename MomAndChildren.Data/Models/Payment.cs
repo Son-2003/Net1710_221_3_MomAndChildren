@@ -15,11 +15,17 @@ public partial class Payment
 
     public DateTime PaymentDate { get; set; }
 
+    public DateTime CreateAt { get; set; }
+
+    public DateTime UpdateAt { get; set; }
+
+    public string Note { get; set; }
+
+    public string BillingAddress { get; set; }
+
+    public string Currency { get; set; }
+
     public int OrderId { get; set; }
-
-    public DateTime CreateDate { get; set; }
-
-    public DateTime UpdateDate { get; set; }
 
     public virtual Order Order { get; set; }
 }

@@ -15,6 +15,14 @@ public partial class OrderDetail
 
     public int Quantity { get; set; }
 
+    public string CreateBy { get; set; }
+
+    public DateTime CreateAt { get; set; }
+
+    public string UpdateBy { get; set; }
+
+    public DateTime UpdateAt { get; set; }
+
     public int OrderId { get; set; }
 
     public int ProductId { get; set; }

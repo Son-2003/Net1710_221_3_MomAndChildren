@@ -13,11 +13,19 @@ public partial class Customer
 
     public string Address { get; set; }
 
+    public string Email { get; set; }
+
     public string PhoneNumber { get; set; }
 
     public DateTime Dob { get; set; }
 
     public int Gender { get; set; }
+
+    public string Bio { get; set; }
+
+    public DateTime CreateAt { get; set; }
+
+    public DateTime UpdateAt { get; set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }
