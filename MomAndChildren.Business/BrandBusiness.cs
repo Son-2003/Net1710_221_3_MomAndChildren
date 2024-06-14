@@ -47,7 +47,6 @@ namespace MomAndChildren.Business
                         return new MomAndChildrenResult(Const.ERROR_EXCEPTION, "Name is duplicated.");
                     }
                 }
-                brand.Status = 1;
                 int result = await _unitOfWork.BrandRepository.CreateAsync(brand);
                 if (result > 0)
                 {

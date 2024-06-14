@@ -19,6 +19,7 @@ namespace MomAndChildren.Business
         Task<IMomAndChildrenResult> UpdateCategory(Category category);
         Task<IMomAndChildrenResult> DeleteCategory(int categoryId);
         Task<IMomAndChildrenResult> ChangeStatus(int categoryId);
+        Task<IMomAndChildrenResult> SearchByName(string? searchTerm);
     }
 
     public class CategoryBusiness : ICategoryBusiness
@@ -49,7 +50,6 @@ namespace MomAndChildren.Business
                         return new MomAndChildrenResult(Const.ERROR_EXCEPTION, "Name is duplicated.");
                     }
                 }
-                category.Status = 1;
                 int result = await _unitOfWork.CategoryRepository.CreateAsync(category);
 
                 if (result > 0)
@@ -200,7 +200,14 @@ namespace MomAndChildren.Business
                 if (newCategory != null)
                 {        
                     newCategory.CategoryName = category.CategoryName;
-                    //newCategory.Status = category.Status;
+                    newCategory.Description = category.Description;
+                    newCategory.Status = category.Status;
+                    newCategory.Image = category.Image;
+                    newCategory.Note = category.Note;
+                    newCategory.CreateBy = category.CreateBy;
+                    newCategory.CreateAt = category.CreateAt;
+                    newCategory.UpdateBy = category.UpdateBy;
+                    newCategory.UpdateAt = category.UpdateAt;
                     int result = await _unitOfWork.CategoryRepository.UpdateAsync(newCategory);
                     if (result > 0)
                     {
@@ -220,6 +227,21 @@ namespace MomAndChildren.Business
             {
                 return new MomAndChildrenResult(Const.ERROR_EXCEPTION, ex.Message);
             }
+        }
+
+        public async Task<IMomAndChildrenResult> SearchByName(string? searchTerm)
+        {
+            try
+            {
+                var categories = await _unitOfWork.CategoryRepository.GetAllAsync();
+                var result = categories.Where(c => c.CategoryName.ToLower().Contains(searchTerm.ToLower())).ToList();
+                return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+            }
+            catch (Exception ex)
+            {
+                return new MomAndChildrenResult(Const.ERROR_EXCEPTION, ex.Message);
+            }
+
         }
 
     }
