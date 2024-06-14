@@ -26,7 +26,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Brand.Status" class="control-label"></label>
-                <input asp-for="Brand.Status" class="form-control" />
+                <select asp-for="Brand.Status" asp-items="Model.BrandStatusOptions" class="form-control"></select>
                 <span asp-validation-for="Brand.Status" class="text-danger"></span>
             </div>
             <div class="form-group">

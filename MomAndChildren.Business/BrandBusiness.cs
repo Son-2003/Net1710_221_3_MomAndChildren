@@ -19,6 +19,7 @@ namespace MomAndChildren.Business
         Task<IMomAndChildrenResult> UpdateBrand(Brand brand);
         Task<IMomAndChildrenResult> DeleteBrand(int brandId);
         Task<IMomAndChildrenResult> ChangeStatus(int brandId);
+        Task<IMomAndChildrenResult> SearchByName(string? searchTerm);
     }
 
     public class BrandBusiness : IBrandBusiness
@@ -195,6 +196,14 @@ namespace MomAndChildren.Business
                 if (newBrand != null)
                 {
                     newBrand.BrandName = brand.BrandName;
+                    newBrand.Status = brand.Status;
+                    newBrand.Description = brand.Description;
+                    newBrand.Image = brand.Image;
+                    newBrand.Note = brand.Note;
+                    newBrand.CreateBy = brand.CreateBy;
+                    newBrand.CreateAt = brand.CreateAt;
+                    newBrand.UpdateBy = brand.UpdateBy;
+                    newBrand.UpdateAt = brand.UpdateAt;
                     int result = await _unitOfWork.BrandRepository.UpdateAsync(newBrand);
                     if (result > 0)
                     {
@@ -214,6 +223,21 @@ namespace MomAndChildren.Business
             {
                 return new MomAndChildrenResult(Const.ERROR_EXCEPTION, ex.Message);
             }
+        }
+
+        public async Task<IMomAndChildrenResult> SearchByName(string? searchTerm)
+        {
+            try
+            {
+                var brands = await _unitOfWork.BrandRepository.GetAllAsync();
+                var result = brands.Where(c => c.BrandName.ToLower().Contains(searchTerm.ToLower())).ToList();
+                return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+            }
+            catch (Exception ex)
+            {
+                return new MomAndChildrenResult(Const.ERROR_EXCEPTION, ex.Message);
+            }
+
         }
     }
 }

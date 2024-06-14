@@ -10,6 +10,14 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+
+<form method="get">
+    <div class="form-group">
+        <label for="searchTerm">Search Brand:</label>
+        <input type="text" class="form-control" id="searchTerm" name="searchTerm" placeholder="Enter name">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -53,7 +61,14 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Status)
+                    @if (item.Status == 1)
+                    {
+                        <span>Active</span>
+                    }
+                    @if (item.Status == 0)
+                    {
+                        <span>Inactive</span>
+                    }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Image)

@@ -5,38 +5,46 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MomAndChildren.Business;
 using MomAndChildren.Data.Models;
 
 namespace MomAndChildren.RazorWebApp.Pages.BrandPage
 {
     public class CreateModel : PageModel
     {
-        private readonly MomAndChildren.Data.Models.Net1710_221_3_MomAndChildrenContext _context;
+        private readonly IBrandBusiness business;
 
-        public CreateModel(MomAndChildren.Data.Models.Net1710_221_3_MomAndChildrenContext context)
+        public CreateModel()
         {
-            _context = context;
-        }
-
-        public IActionResult OnGet()
-        {
-            return Page();
+            business ??= new BrandBusiness();
         }
 
         [BindProperty]
         public Brand Brand { get; set; } = default!;
-        
+
+        public SelectList BrandStatusOptions { get; set; } = default!;
+
+        public IActionResult OnGet()
+        {
+            BrandStatusOptions = new SelectList(new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Active" },
+                new SelectListItem { Value = "0", Text = "Inactive" },
+            }, "Value", "Text");
+
+            return Page();
+        }
+
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid || _context.Brands == null || Brand == null)
+            if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Brands.Add(Brand);
-            await _context.SaveChangesAsync();
+            await business.CreateBrand(Brand);
 
             return RedirectToPage("./Index");
         }

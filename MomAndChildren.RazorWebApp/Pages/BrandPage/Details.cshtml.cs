@@ -5,36 +5,37 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using MomAndChildren.Business;
 using MomAndChildren.Data.Models;
 
 namespace MomAndChildren.RazorWebApp.Pages.BrandPage
 {
     public class DetailsModel : PageModel
     {
-        private readonly MomAndChildren.Data.Models.Net1710_221_3_MomAndChildrenContext _context;
+        private readonly IBrandBusiness business;
 
-        public DetailsModel(MomAndChildren.Data.Models.Net1710_221_3_MomAndChildrenContext context)
+        public DetailsModel()
         {
-            _context = context;
+            business ??= new BrandBusiness();
         }
 
-      public Brand Brand { get; set; } = default!; 
+        public Brand Brand { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            if (id == null || _context.Brands == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var brand = await _context.Brands.FirstOrDefaultAsync(m => m.BrandId == id);
+            var brand = await business.GetBrandByIdAsync(id);
             if (brand == null)
             {
                 return NotFound();
             }
-            else 
+            else
             {
-                Brand = brand;
+                Brand = brand.Data as Brand;
             }
             return Page();
         }
