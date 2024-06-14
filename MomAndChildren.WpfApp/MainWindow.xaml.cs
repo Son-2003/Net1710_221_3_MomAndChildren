@@ -1,4 +1,5 @@
-﻿using MomAndChildrenWpfApp.UI;
+﻿using MomAndChildren.WpfApp.UI;
+using MomAndChildrenWpfApp.UI;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,6 +26,20 @@ namespace MomAndChildrenWpfApp
         private async void Open_wOrderDetail_Click(object sender, RoutedEventArgs e)
         {
             var p = new wOrderDetail();
+            p.Owner = this;
+            p.Show();
+        }
+
+        private async void Open_wCategory_Click(object sender, RoutedEventArgs e)
+        {
+            var p = new wCategory();
+            p.Owner = this;
+            p.Show();
+        }
+
+        private async void Open_wBrand_Click(object sender, RoutedEventArgs e)
+        {
+            var p = new wBrand();
             p.Owner = this;
             p.Show();
         }

@@ -222,9 +222,5 @@ namespace MomAndChildren.Business
             }
         }
 
-        public async Task GetCategoryByIdAsync(string text)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
