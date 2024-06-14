@@ -5,8 +5,79 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MomAndChildren.WpfApp.UI"
         mc:Ignorable="d"
-        Title="wBrand" Height="450" Width="800">
+            Title="Brand" Height="500" Width="1000">
     <Grid>
-        
+        <StackPanel Orientation="Vertical">
+            <GroupBox Header="Brand Form" Margin="10">
+                <Grid Height="120">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Grid.Row="0" Content="Id" HorizontalAlignment="Left" VerticalContentAlignment="Center" />
+                    <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtBrandId" Height="25" Text="{Binding Path=Brand.BrandId, Mode=TwoWay}"  Margin="5"  Width="180" HorizontalAlignment="Left" IsReadOnly="True"/>
+                    <Label Grid.Column="2" Grid.Row="0" Content="Name" HorizontalAlignment="Left" VerticalContentAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="3" x:Name="txtBrandName" Height="25" Text="{Binding Path=Brand.BrandName, Mode=TwoWay}"  Margin="5"  Width="180" HorizontalAlignment="Left"/>
+                    <Label Grid.Column="4" Grid.Row="0" Content="Description" HorizontalAlignment="Left" VerticalContentAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="5" x:Name="txtBrandDescription" Height="25" Text="{Binding Path=Brand.Description, Mode=TwoWay}"  Margin="5"  Width="180" HorizontalAlignment="Left"/>
+                    <Label Grid.Column="6" Grid.Row="0" Content="Active" HorizontalAlignment="Left" VerticalContentAlignment="Center" />
+                    <CheckBox Grid.Column="7" Grid.Row="0" x:Name="chkIsActive" Height="25" IsChecked="{Binding Path=Brand.Status}"  Margin="5"  Width="180" HorizontalAlignment="Left"/>
+
+                    <Label Grid.Column="0" Grid.Row="1" Content="Created By" HorizontalAlignment="Left" VerticalContentAlignment="Center" />
+                    <TextBox Grid.Column="1" Grid.Row="1" x:Name="txtBrandCreateBy" Height="25" Text="{Binding Path=Brand.CreateBy, Mode=TwoWay}"  Margin="5"  Width="180" HorizontalAlignment="Left"/>
+                    <Label Grid.Column="2" Grid.Row="1" Content="Updated By" HorizontalAlignment="Left" VerticalContentAlignment="Center" />
+                    <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtBrandUpdateBy" Height="25" Text="{Binding Path=Brand.UpdateBy, Mode=TwoWay}"  Margin="5"  Width="180" HorizontalAlignment="Left"/>
+                    <Label Grid.Column="4" Grid.Row="1" Content="Image" HorizontalAlignment="Left" VerticalContentAlignment="Center" />
+                    <TextBox Grid.Column="5" Grid.Row="1" x:Name="txtBrandImage" Height="25" Text="{Binding Path=Brand.Image, Mode=TwoWay}"  Margin="5"  Width="180" HorizontalAlignment="Left"/>
+
+                    <Label Grid.Column="0" Grid.Row="2" Content="Created At" HorizontalAlignment="Left" VerticalContentAlignment="Center" />
+                    <DatePicker Grid.Column="1" Grid.Row="2" x:Name="dpBrandCreatedAt" Height="25" Text="{Binding Path=Brand.CreateAt, Mode=TwoWay}" Margin="5"  Width="180" HorizontalAlignment="Left"/>
+                    <Label Grid.Column="2" Grid.Row="2" Content="Updated At" HorizontalAlignment="Left" VerticalContentAlignment="Center" />
+                    <DatePicker Grid.Column="3" Grid.Row="2" x:Name="dpBrandUpdatedAt" Height="25" Text="{Binding Path=Brand.UpdateAt, Mode=TwoWay}" Margin="5"  Width="180" HorizontalAlignment="Left"/>
+                    <Label Grid.Column="4" Grid.Row="2" Content="Note" HorizontalAlignment="Left" VerticalContentAlignment="Center" />
+                    <TextBox Grid.Column="5" Grid.Row="2" x:Name="txtBrandNote" Height="25" Text="{Binding Path=Brand.Note, Mode=TwoWay}"  Margin="5"  Width="180" HorizontalAlignment="Left"/>
+                </Grid>
+            </GroupBox>
+            <StackPanel Height="40" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="ButtonSave" Content="Save" Height="30" Width="80" Click="ButtonSave_Click"/>
+                <Button x:Name="ButtonCancel" Content="Cancel" Height="30" Width="80" Click="ButtonCancel_Click"/>
+            </StackPanel>
+            <StackPanel Height="210">
+                <DataGrid x:Name="grdBrand" AutoGenerateColumns="False" ItemsSource="{Binding Brands}" CanUserAddRows="False" Height="200" Margin="10" MouseDoubleClick="grdBrand_MouseDouble_Click" SelectionMode="Single" SelectionUnit="FullRow">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Id" Binding="{Binding Path=BrandId}" Visibility="Visible"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Path=BrandName}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="150"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Created By" Binding="{Binding Path=CreateBy}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Created At" Binding="{Binding Path=CreateAt}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Updated By" Binding="{Binding Path=UpdateBy}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Updated At" Binding="{Binding Path=UpdateAt}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Image" Binding="{Binding Path=Image}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Note" Binding="{Binding Path=Note}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}" Width="50"  IsReadOnly="True"/>
+
+                        <DataGridTemplateColumn Width="50">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="X" x:Name="ButtonDelete" CommandParameter="{Binding Path=BrandId}" Click="grdBrand_ButtonDelete_Click"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>
