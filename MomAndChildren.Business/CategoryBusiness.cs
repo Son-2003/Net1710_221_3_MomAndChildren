@@ -79,7 +79,7 @@ namespace MomAndChildren.Business
                     var products = await _unitOfWork.ProductRepository.GetAllAsync();
                     foreach (var product in products)
                     {
-                        if (categoryId == product.Category.CategoryId)
+                        if (categoryId == product.CategoryId)
                         {
                             return new MomAndChildrenResult(Const.ERROR_EXCEPTION, "Category is using");
                         }

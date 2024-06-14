@@ -76,7 +76,7 @@ namespace MomAndChildren.Business
                     var products = await _unitOfWork.ProductRepository.GetAllAsync();
                     foreach (var product in products)
                     {
-                        if (brandId == product.Category.CategoryId)
+                        if (brandId == product.BrandId)
                         {
                             return new MomAndChildrenResult(Const.ERROR_EXCEPTION, "Brand is using");
                         }
