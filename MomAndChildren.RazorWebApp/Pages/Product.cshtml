@@ -39,8 +39,8 @@
                         <td>@product.ProductName</td>
                         <td>@product.Price</td>
                         <td>@product.Description</td>
-                        <td>@product.BrandId</td>
-                        <td>@product.CategoryId</td>
+                        <td>@product.Brand.BrandName</td>
+                        <td>@product.Category.CategoryName</td>
                         <td>
                             <button type="submit" formaction="/Product?handler=Delete&productId=@product.ProductId" class="btn btn-danger">Delete</button>
                         </td>
@@ -60,6 +60,82 @@ else
     </div>
 }
 
+<!-- Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addProducToDBForm" method="post" asp-page-handler="addProduct" onsubmit="return validateAddProductForm()">
+                    <div class="form-group">
+                        <label for="ProductName">ProductName</label>
+                        <input id="ProductName" name="ProductName" class="form-control" type="text" />
+                        <span id="productNameError" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="Status">Status</label>
+                        <input id="Status" name="Status" class="form-control" type="number" min="0" max="1" />
+                        <span id="statusError" class="text-danger"></span>
+                    </div><div class="form-group">
+                        <label for="ExpireDate">ExpireDate</label>
+                        <input id="ExpireDate" name="ExpireDate" class="form-control" type="date"/>
+                        <span id="expireDateError" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="ManufacturingDate">ManufacturingDate</label>
+                        <input id="ManufacturingDate" name="ManufacturingDate" class="form-control" type="date"/>
+                        <span id="manufacturingDateError" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="Quantity">Quantity</label>
+                        <input id="Quantity" name="Quantity" class="form-control" type="number" min="1" />
+                        <span id="quantityError" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="Price">Price</label>
+                        <input id="Price" name="Price" class="form-control" type="number" step="0.1" min="1" />
+                        <span id="priceError" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="Description">Description</label>
+                        <input id="Description" name="Description" class="form-control" type="text" />
+                        <span id="descriptionError" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="BrandId">Brand</label>
+                        <select id="BrandId" name="BrandId" class="form-control">
+                            <option value="0">Select a brand</option>
+                            @foreach (var product in products)
+                            {
+                                <option value="@product.Brand.BrandId">@product.Brand.BrandName</option>
+                            }
+                        </select>
+                        <span id="brandIdError" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="CategoryId">Category</label>
+                        <select id="CategoryId" name="CategoryId" class="form-control">
+                            <option value="0">Select a category</option>
+                            @foreach (var product in products)
+                            {
+                                <option value="@product.Category.CategoryId">@product.Category.CategoryName</option>
+                            }
+                        </select>
+                        <span id="categoryIdError" class="text-danger"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add to Cart</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         function enableEditing() {
@@ -72,5 +148,89 @@ else
             document.getElementById('btnUpdate').classList.add('d-none');
             document.getElementById('btnSave').classList.remove('d-none');
         }
+
+        function validateAddProductForm() {
+            var isValid = true;
+            var productId = document.getElementById('ProductId').value;
+            var quantity = document.getElementById('Quantity').value;
+
+            var productIdError = document.getElementById('productIdError');
+            var quantityError = document.getElementById('quantityError');
+
+            if (productId == "0") {
+                productIdError.innerText = "Please select a valid product.";
+                isValid = false;
+            } else {
+                productIdError.innerText = "";
+            }
+
+            if (quantity < 1) {
+                quantityError.innerText = "Quantity must be at least 1.";
+                isValid = false;
+            } else {
+                quantityError.innerText = "";
+            }
+
+            return isValid;
+        }
+
+        function validateAddOrderIdForm() {
+            var isValid = true;
+            var orderId = document.getElementById('OrderId').value;
+
+            var orderIdError = document.getElementById('orderIdError');
+
+            if (orderId == "0") {
+                orderIdError.innerText = "Please select a valid orderId.";
+                isValid = false;
+            } else {
+                orderIdError.innerText = "";
+            }
+            return isValid;
+        }
     </script>
 }
+
+@* @section Scripts {
+    <script>
+        function validateAddProductForm() {
+            var isValid = true;
+            var productId = document.getElementById('ProductId').value;
+            var quantity = document.getElementById('Quantity').value;
+
+            var productIdError = document.getElementById('productIdError');
+            var quantityError = document.getElementById('quantityError');
+
+            if (productId == "0") {
+                productIdError.innerText = "Please select a valid product.";
+                isValid = false;
+            } else {
+                productIdError.innerText = "";
+            }
+
+            if (quantity < 1) {
+                quantityError.innerText = "Quantity must be at least 1.";
+                isValid = false;
+            } else {
+                quantityError.innerText = "";
+            }
+
+            return isValid;
+        }
+
+        function validateAddOrderIdForm() {
+            var isValid = true;
+            var orderId = document.getElementById('OrderId').value;
+
+            var orderIdError = document.getElementById('orderIdError');
+
+            if (orderId == "0") {
+                orderIdError.innerText = "Please select a valid orderId.";
+                isValid = false;
+            } else {
+                orderIdError.innerText = "";
+            }
+            return isValid;
+        }
+    </script>
+} *@

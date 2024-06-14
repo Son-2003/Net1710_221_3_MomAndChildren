@@ -1,4 +1,5 @@
-﻿using MomAndChildren.Data.Base;
+﻿using Microsoft.EntityFrameworkCore;
+using MomAndChildren.Data.Base;
 using MomAndChildren.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,10 @@ namespace MomAndChildren.Data.Repositories
     {
         public ProductRepository() { }
         public ProductRepository(Net1710_221_3_MomAndChildrenContext context) => _context = context;
+        public List<Product> getProductsAsync()
+        {
+            List<Product> products = _context.Products.Include(x => x.Brand).Include(x=>x.Category).ToList();
+            return products;
+        }
     }
 }

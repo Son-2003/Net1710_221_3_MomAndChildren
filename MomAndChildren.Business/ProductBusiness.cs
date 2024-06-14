@@ -1,6 +1,7 @@
 ﻿using MomAndChildren.Common;
 using MomAndChildren.Data;
 using MomAndChildren.Data.Models;
+using MomAndChildren.Data.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace MomAndChildren.Business
     public interface IProductBusiness
     {
         Task<IMomAndChildrenResult> GetProductsAsync();
+        Task<IMomAndChildrenResult> GetProductsWithNestedObjAsync();
         Task<IMomAndChildrenResult> GetProductByIdAsync(int id);
         Task<IMomAndChildrenResult> CreateProduct(Product product);
         Task<IMomAndChildrenResult> UpdateProduct(int productId, Product product);
@@ -23,9 +25,12 @@ namespace MomAndChildren.Business
     {
         private readonly UnitOfWork _unitOfWork;
 
+        private readonly ProductRepository ProductRepository;
+
         public ProductBusiness()
         {
             _unitOfWork ??= new UnitOfWork();
+            ProductRepository = new ProductRepository();
         }
 
         public async Task<IMomAndChildrenResult> CreateProduct(Product product)
@@ -68,6 +73,16 @@ namespace MomAndChildren.Business
         public async Task<IMomAndChildrenResult> GetProductsAsync()
         {
             List<Product> products = await _unitOfWork.ProductRepository.GetAllAsync();
+            if (products == null)
+            {
+                return new MomAndChildrenResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
+            }
+            return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, products);
+        }
+
+        public async Task<IMomAndChildrenResult> GetProductsWithNestedObjAsync()
+        {
+            List<Product> products = ProductRepository.getProductsAsync();
             if (products == null)
             {
                 return new MomAndChildrenResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
