@@ -16,7 +16,12 @@ namespace MomAndChildren.Data.Repositories
 
         public async Task<List<OrderDetail>> GetAllAsyncOrderDetails()
         {
-            return await _context.OrderDetails.Include("Product").ToListAsync();
+            return await _context.OrderDetails.OrderByDescending(tmp => tmp.OrderDetailId).Include("Product").Include("Order").ToListAsync();
+        }
+
+        public async Task<OrderDetail> GetOrderDetailByIdAsync(int id)
+        {
+            return await _context.OrderDetails.Where(tmp => tmp.OrderDetailId == id).Include("Product").Include("Order").FirstAsync();
         }
     }
 }
