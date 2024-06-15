@@ -1,0 +1,99 @@
+﻿@page
+@model MomAndChildren.RazorWebApp.Pages.BrandPage.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+
+<form method="get">
+    <div class="form-group">
+        <label for="searchTerm">Search Brand:</label>
+        <input type="text" class="form-control" id="searchTerm" name="searchTerm" placeholder="Enter name">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Brand[0].BrandName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Brand[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Brand[0].Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Brand[0].Image)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Brand[0].Note)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Brand[0].CreateBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Brand[0].CreateAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Brand[0].UpdateBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Brand[0].UpdateAt)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Brand) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.BrandName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                    @if (item.Status == 1)
+                    {
+                        <span>Active</span>
+                    }
+                    @if (item.Status == 0)
+                    {
+                        <span>Inactive</span>
+                    }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Image)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdateBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdateAt)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.BrandId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.BrandId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.BrandId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
