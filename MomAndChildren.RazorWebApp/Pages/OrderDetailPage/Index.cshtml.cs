@@ -44,6 +44,8 @@ namespace MomAndChildren.RazorWebApp.Pages.OrderDetailPage
             {
                 result = await _orderDetail.SearchByProductName(searchTerm);
                 OrderDetail = result.Data as List<OrderDetail>;
+
+                return Page();
             }
 
 

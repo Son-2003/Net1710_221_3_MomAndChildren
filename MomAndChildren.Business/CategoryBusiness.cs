@@ -19,7 +19,7 @@ namespace MomAndChildren.Business
         Task<IMomAndChildrenResult> UpdateCategory(Category category);
         Task<IMomAndChildrenResult> DeleteCategory(int categoryId);
         Task<IMomAndChildrenResult> ChangeStatus(int categoryId);
-        Task<IMomAndChildrenResult> SearchByName(string? searchTerm);
+        Task<IMomAndChildrenResult> SearchByKeyword(string? searchTerm);
     }
 
     public class CategoryBusiness : ICategoryBusiness
@@ -229,19 +229,23 @@ namespace MomAndChildren.Business
             }
         }
 
-        public async Task<IMomAndChildrenResult> SearchByName(string? searchTerm)
+        public async Task<IMomAndChildrenResult> SearchByKeyword(string? searchTerm)
         {
             try
             {
                 var categories = await _unitOfWork.CategoryRepository.GetAllAsync();
-                var result = categories.Where(c => c.CategoryName.ToLower().Contains(searchTerm.ToLower())).ToList();
+                var result = categories.Where(c => c.CategoryName.ToLower().Contains(searchTerm.ToLower()) 
+                    || c.Description.ToLower().Contains(searchTerm.ToLower()) 
+                    || c.Note.ToLower().Contains(searchTerm.ToLower())
+                    || c.CreateBy.ToLower().Contains(searchTerm.ToLower())
+                    || c.UpdateBy.ToLower().Contains(searchTerm.ToLower())
+                    ).ToList();
                 return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
             }
             catch (Exception ex)
             {
                 return new MomAndChildrenResult(Const.ERROR_EXCEPTION, ex.Message);
             }
-
         }
 
     }

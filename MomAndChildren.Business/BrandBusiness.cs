@@ -19,7 +19,7 @@ namespace MomAndChildren.Business
         Task<IMomAndChildrenResult> UpdateBrand(Brand brand);
         Task<IMomAndChildrenResult> DeleteBrand(int brandId);
         Task<IMomAndChildrenResult> ChangeStatus(int brandId);
-        Task<IMomAndChildrenResult> SearchByName(string? searchTerm);
+        Task<IMomAndChildrenResult> SearchByKeyword(string? searchTerm);
     }
 
     public class BrandBusiness : IBrandBusiness
@@ -225,12 +225,17 @@ namespace MomAndChildren.Business
             }
         }
 
-        public async Task<IMomAndChildrenResult> SearchByName(string? searchTerm)
+        public async Task<IMomAndChildrenResult> SearchByKeyword(string? searchTerm)
         {
             try
             {
                 var brands = await _unitOfWork.BrandRepository.GetAllAsync();
-                var result = brands.Where(c => c.BrandName.ToLower().Contains(searchTerm.ToLower())).ToList();
+                var result = brands.Where(c => c.BrandName.ToLower().Contains(searchTerm.ToLower())
+                    || c.Description.ToLower().Contains(searchTerm.ToLower())
+                    || c.Note.ToLower().Contains(searchTerm.ToLower())
+                    || c.CreateBy.ToLower().Contains(searchTerm.ToLower())
+                    || c.UpdateBy.ToLower().Contains(searchTerm.ToLower())
+                    ).ToList();
                 return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
             }
             catch (Exception ex)
