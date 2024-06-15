@@ -11,7 +11,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICartBusiness, CartBusiness>(); // ??ng ký ICartBusiness v?i CartBusiness
 builder.Services.AddScoped<IPaymentHistoryBusiness, PaymentBusiness>();
 builder.Services.AddScoped<IOrderBusiness, OrderBusiness>();
-
+builder.Services.AddScoped<IOrderDetailBusiness, OrderDetailBusiness>();
+builder.Services.AddScoped<IProductBusiness, ProductBusiness>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
