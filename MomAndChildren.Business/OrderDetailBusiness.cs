@@ -3,6 +3,7 @@ using MomAndChildren.Data;
 using MomAndChildren.Data.Models;
 using MomAndChildren.Data.Models.DTO;
 using MomAndChildren.Data.Repositories;
+using System.Diagnostics;
 
 
 namespace MomAndChildren.Business
@@ -11,9 +12,10 @@ namespace MomAndChildren.Business
     {
         Task<IMomAndChildrenResult> GetOrderDetailsAsync();
         Task<IMomAndChildrenResult> GetOrderDetailByIdAsync(int orderDetailId);
-        Task<IMomAndChildrenResult> CreateOrderDetail(int orderId, List<CartItem> products);
-        Task<IMomAndChildrenResult> UpdateOrderDetailQuantity(int detailId, int quantity);
+        Task<IMomAndChildrenResult> CreateOrderDetail(OrderDetail orderDetail);
+        Task<IMomAndChildrenResult> UpdateOrderDetail(OrderDetail orderDetail);
         Task<IMomAndChildrenResult> DeleteOrderDetail(int detailId);
+        Task<IMomAndChildrenResult> SearchByProductName(string? searchTerm);
     }
 
     public class OrderDetailBusiness : IOrderDetailBusiness
@@ -27,30 +29,16 @@ namespace MomAndChildren.Business
             _unitOfWork ??= new UnitOfWork();
         }
 
-        public async Task<IMomAndChildrenResult> CreateOrderDetail(int orderId, List<CartItem> products)
+        public async Task<IMomAndChildrenResult> CreateOrderDetail(OrderDetail orderDetail)
         {
-            //create new order details
-            foreach (var item in products)
-            {
-                double price = item.Product.Price;
-                int quantityCart = item.Quantity;
-
-                var orderDetail = new OrderDetail
-                {
-                    OrderId = orderId,
-                    UnitPrice = price,
-                    TotalPrice = price * quantityCart,
-                    ProductId = item.Product.ProductId,
-                    Quantity = quantityCart,
-                };
-                await _unitOfWork.OrderDetailRepository.CreateAsync(orderDetail);
-            }
+            
+            await _unitOfWork.OrderDetailRepository.CreateAsync(orderDetail);
             return new MomAndChildrenResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG);
         }
 
         public async Task<IMomAndChildrenResult> GetOrderDetailByIdAsync(int orderDetailId)
         {
-            OrderDetail? orderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(orderDetailId);
+            OrderDetail? orderDetail = await _unitOfWork.OrderDetailRepository.GetOrderDetailByIdAsync(orderDetailId);
             if (orderDetail == null)
             {
                 return new MomAndChildrenResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
@@ -81,16 +69,9 @@ namespace MomAndChildren.Business
             }
         }
 
-        public async Task<IMomAndChildrenResult> UpdateOrderDetailQuantity(int detailId, int quantity)
+        public async Task<IMomAndChildrenResult> UpdateOrderDetail(OrderDetail orderDetail)
         {
-            var orderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(detailId);
-            if (orderDetail != null)
-            {
-                orderDetail.Quantity = quantity;
-                orderDetail.TotalPrice = quantity * orderDetail.UnitPrice;
-                await _unitOfWork.OrderDetailRepository.UpdateAsync(orderDetail);
-                return new MomAndChildrenResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG);
-            }
+            await _unitOfWork.OrderDetailRepository.UpdateAsync(orderDetail);
             return new MomAndChildrenResult(Const.FAIL_UPDATE_CODE, Const.FAIL_UPDATE_MSG);
         }
 
@@ -103,6 +84,21 @@ namespace MomAndChildren.Business
                 return new MomAndChildrenResult(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG);
             }
             return new MomAndChildrenResult(Const.FAIL_DELETE_CODE, Const.FAIL_DELETE_MSG);
+
+        }
+
+        public async Task<IMomAndChildrenResult> SearchByProductName(string? searchTerm)
+        {
+            try
+            {
+                var orderDetails = await _unitOfWork.OrderDetailRepository.GetAllAsync();
+                var result = orderDetails.Where(c => c.Product.ProductName.ToLower().Contains(searchTerm.ToLower()) || c.CreateBy.ToLower().Contains(searchTerm.ToLower()) || c.UpdateBy.ToLower().Contains(searchTerm.ToLower())).ToList();
+                return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+            }
+            catch (Exception ex)
+            {
+                return new MomAndChildrenResult(Const.ERROR_EXCEPTION, ex.Message);
+            }
 
         }
     }
