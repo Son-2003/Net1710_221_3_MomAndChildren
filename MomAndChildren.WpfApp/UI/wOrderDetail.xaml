@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MomAndChildrenWpfApp.UI"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="wOrderDetail" Height="470" Width="800">
+        Title="wOrderDetail" Height="470" Width="1300">
     <Grid>
         <StackPanel Orientation="Vertical">
             <GroupBox Header="OrderDetail Form" Margin="10">
@@ -44,12 +44,16 @@
             <StackPanel Height="210">
                 <DataGrid x:Name="grdOrderDetails" AutoGenerateColumns="False" ItemsSource="{Binding OrderDetails}" CanUserAddRows="False" Height="200" Margin="10" MouseDoubleClick="grdOrderDetail_MouseDouble_Click" SelectionMode="Single" SelectionUnit="FullRow">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Order Detail ID" Binding="{Binding Path=OrderDetailId}" Width="100" IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Order ID" Binding="{Binding Path=OrderId}" Width="100" IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Product ID" Binding="{Binding Path=ProductId}" Width="100" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="OrderDetailID" Binding="{Binding Path=OrderDetailId}" Width="100" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="OrderID" Binding="{Binding Path=OrderId}" Width="100" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="ProductID" Binding="{Binding Path=ProductId}" Width="100" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Quantity" Binding="{Binding Path=Quantity}" Width="60" IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Unit Price" Binding="{Binding Path=UnitPrice}" Width="100" IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Total Price" Binding="{Binding Path=TotalPrice}" Width="100" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="UnitPrice" Binding="{Binding Path=UnitPrice}" Width="100" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="TotalPrice" Binding="{Binding Path=TotalPrice}" Width="100" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="CreateBy" Binding="{Binding Path=CreateBy}" Width="100" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="CreateAt" Binding="{Binding Path=CreateAt}" Width="200" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="UpdateBy" Binding="{Binding Path=UpdateBy}" Width="100" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="UpdateAt" Binding="{Binding Path=UpdateAt}" Width="200" IsReadOnly="True"/>
                         <DataGridTemplateColumn Width="50">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
