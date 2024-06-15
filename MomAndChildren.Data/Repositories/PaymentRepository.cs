@@ -20,6 +20,5 @@ namespace MomAndChildren.Data.Repositories
                 .OrderByDescending(x => x.PaymentId)
                 .ToListAsync();
         }
-
     }
 }
