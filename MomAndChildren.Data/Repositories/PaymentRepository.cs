@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace MomAndChildren.Data.Repositories
 {
-    public class PaymentHistoryRepository : GenericRepository<Payment>
+    public class PaymentRepository : GenericRepository<Payment>
     {
-        public PaymentHistoryRepository() { }
-        public PaymentHistoryRepository(Net1710_221_3_MomAndChildrenContext context) => _context = context;
-        public async Task<List<Payment>> GetPaymentHistoryListByCustomerId(int id)
+        public PaymentRepository() { }
+        public PaymentRepository(Net1710_221_3_MomAndChildrenContext context) => _context = context;
+        public async Task<List<Payment>> GetPaymentListByCustomerId(int id)
         {
             return await _context.Payments
                 .Where(x => x.Order.CustomerId == id)

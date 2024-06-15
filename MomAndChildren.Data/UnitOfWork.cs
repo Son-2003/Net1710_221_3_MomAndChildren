@@ -46,11 +46,11 @@ namespace MomAndChildren.Data
             get { return _brand ??= new Repositories.BrandRepository(); }
         }
 
-        public PaymentHistoryRepository PaymentHistoryRepository
+        public PaymentRepository PaymentRepository
         {
             get
             {
-                return _paymentHistory ??= new Repositories.PaymentHistoryRepository();
+                return _paymentHistory ??= new Repositories.PaymentRepository();
             }
         }
 
