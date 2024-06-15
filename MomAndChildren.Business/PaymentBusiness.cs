@@ -69,7 +69,7 @@ namespace MomAndChildren.Business
         {
             try
             {
-                var paymentList = await _unitOfWork.PaymentHistoryRepository.GetPaymentHistoryListByCustomerId(id);
+                var paymentList = await _unitOfWork.PaymentRepository.GetPaymentListByCustomerId(id);
                 if (paymentList == null)
                 {
                     return new MomAndChildrenResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA__MSG);

@@ -16,7 +16,7 @@ namespace MomAndChildren.Data
 
         private OrderRepository _order;
         private OrderDetailRepository _orderDetail;
-        private PaymentHistoryRepository _paymentHistory;
+        private PaymentRepository _payment;
 
         private ProductRepository _product;
 
@@ -50,7 +50,7 @@ namespace MomAndChildren.Data
         {
             get
             {
-                return _paymentHistory ??= new Repositories.PaymentRepository();
+                return _payment ??= new Repositories.PaymentRepository();
             }
         }
 
