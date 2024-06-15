@@ -138,24 +138,40 @@ else
 
 @section Scripts {
     <script>
-        function enableEditing() {
-            document.querySelectorAll('input[type="number"]').forEach(input => {
-                input.classList.remove('d-none');
-            });
-            document.querySelectorAll('.quantity-display').forEach(span => {
-                span.classList.add('d-none');
-            });
-            document.getElementById('btnUpdate').classList.add('d-none');
-            document.getElementById('btnSave').classList.remove('d-none');
-        }
+        // function enableEditing() {
+        //     document.querySelectorAll('input[type="number"]').forEach(input => {
+        //         input.classList.remove('d-none');
+        //     });
+        //     document.querySelectorAll('.quantity-display').forEach(span => {
+        //         span.classList.add('d-none');
+        //     });
+        //     document.getElementById('btnUpdate').classList.add('d-none');
+        //     document.getElementById('btnSave').classList.remove('d-none');
+        // }
 
         function validateAddProductForm() {
             var isValid = true;
             var productId = document.getElementById('ProductId').value;
+            var productName = document.getElementById('ProductName').value;
+            var status = document.getElementById('Status').value;
+            var expireDate = document.getElementById('ExpireDate').value;
+            var manufacturingDate = document.getElementById('ManufacturingDate').value;
             var quantity = document.getElementById('Quantity').value;
+            var price = document.getElementById('Price').value;
+            var description = document.getElementById('Description').value;
+            var brandId = document.getElementById('BrandId').value;
+            var categoryId = document.getElementById('CategoryId').value;
 
             var productIdError = document.getElementById('productIdError');
+            var productNameError = document.getElementById('productNameError');
+            var statusError = document.getElementById('statusError');
+            var expireDateError = document.getElementById('expireDateError');
+            var manufacturingDateError = document.getElementById('manufacturingDateError');
             var quantityError = document.getElementById('quantityError');
+            var priceError = document.getElementById('priceError');
+            var descriptionError = document.getElementById('descriptionError');
+            var brandIdError = document.getElementById('brandIdError');
+            var categoryIdError = document.getElementById('categoryId');
 
             if (productId == "0") {
                 productIdError.innerText = "Please select a valid product.";
@@ -164,11 +180,74 @@ else
                 productIdError.innerText = "";
             }
 
+            if (productName == "") {
+                productNameError.innerText = "Product name is required.";
+                isValid = false;
+            } else {
+                productNameError.innerText = "";
+            }
+
+            if (status == "") {
+                statusError.innerText = "Status is required.";
+                isValid = false;
+            } else {
+                statusError.innerText = "";
+            }
+
+            if (expireDate == "") {
+                expireDateError.innerText = "Expire date is required.";
+                isValid = false;
+            } else {
+                expireDateError.innerText = "";
+            }
+
+            if (manufacturingDate == "") {
+                manufacturingDateError.innerText = "Manufacturing date is required.";
+                isValid = false;
+            } else {
+                manufacturingDateError.innerText = "";
+            }
+
             if (quantity < 1) {
                 quantityError.innerText = "Quantity must be at least 1.";
                 isValid = false;
             } else {
                 quantityError.innerText = "";
+            }
+
+            if (quantity == "") {
+                quantityError.innerText = "Quantity is required.";
+                isValid = false;
+            } else {
+                quantityError.innerText = "";
+            }
+
+            if (price == "") {
+                priceError.innerText = "Price is required.";
+                isValid = false;
+            } else {
+                priceError.innerText = "";
+            }
+
+            if (description == "") {
+                descriptionError.innerText = "Description is required.";
+                isValid = false;
+            } else {
+                descriptionError.innerText = "";
+            }
+
+            if (brandId == "0") {
+                brandIdError.innerText = "Please select a valid brand.";
+                isValid = false;
+            } else {
+                brandIdError.innerText = "";
+            }
+
+            if (categoryId == "0") {
+                categoryIdError.innerText = "Please select a valid category.";
+                isValid = false;
+            } else {
+                categoryIdError.innerText = "";
             }
 
             return isValid;

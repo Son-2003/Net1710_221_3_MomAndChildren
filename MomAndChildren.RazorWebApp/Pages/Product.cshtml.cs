@@ -1,9 +1,14 @@
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using MomAndChildren.Business;
 using MomAndChildren.Data.Models;
 using MomAndChildren.Data.Repositories;
+using Newtonsoft.Json.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System;
 
 namespace MomAndChildren.RazorWebApp.Pages
 {
@@ -43,7 +48,12 @@ namespace MomAndChildren.RazorWebApp.Pages
         [BindProperty]
         public int CategoryId { get; set; }
 
-        public async Task<IActionResult> OnPostAsync()
+        public void OnGet()
+        {
+            Products = this.GetProducts();
+        }
+
+        public IActionResult OnPostAddProduct()
         {
             var product = new Product();
             product.ProductName = ProductName;
@@ -57,34 +67,14 @@ namespace MomAndChildren.RazorWebApp.Pages
             product.CategoryId = CategoryId;
 
             _context.Add(product);
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
 
-            return RedirectToPage("./Index");
-        }
-
-        public void OnGet()
-        {
-            Products = this.GetProducts();
-        }
-
-        public IActionResult OnPostAddProduct(int productId, Product Product)
-        {
-            if (Product != null)
-            {
-                _productBusiness.UpdateProduct(productId, Product);
-            }
-            return Redirect("Product");
+            return RedirectToPage("./Product");
         }
 
         private List<Product> GetProducts()
         {
             var productsResult = _productBusiness.GetProductsWithNestedObjAsync();
-
-            //if (productsResult.Status > 0 && productsResult.Result.Data != null)
-            //{
-            //    var Products = productsResult.Result.Data;
-            //    return (List<Product>)Products;
-            //}
             if (productsResult != null)
             {
                 return (List<Product>)productsResult.Result.Data;
