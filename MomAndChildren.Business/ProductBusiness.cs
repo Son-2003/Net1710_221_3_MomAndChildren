@@ -64,7 +64,7 @@ namespace MomAndChildren.Business
             }
             else
             {
-                return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG);
+                return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, product);
             }
         }
 
