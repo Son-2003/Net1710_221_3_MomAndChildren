@@ -14,39 +14,43 @@
 <form method="get">
     <div class="form-group">
         <label for="searchTerm">Search Brand:</label>
-        <input type="text" class="form-control" id="searchTerm" name="searchTerm" placeholder="Enter name">
+        <input style="margin: 0 15px 0 10px" type="text" class="form-control" id="searchTerm" name="searchTerm" placeholder="Enter Name or Description or Note or CreateBy or UpdateBy">
+        <button type="submit" class="btn btn-primary">Search</button>
     </div>
-    <button type="submit" class="btn btn-primary">Search</button>
+    
 </form>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Brand[0].BrandName)
+                @Html.DisplayNameFor(model => model.Brand.First().BrandId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Brand[0].Description)
+                @Html.DisplayNameFor(model => model.Brand.First().BrandName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Brand[0].Status)
+                @Html.DisplayNameFor(model => model.Brand.First().Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Brand[0].Image)
+                @Html.DisplayNameFor(model => model.Brand.First().Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Brand[0].Note)
+                @Html.DisplayNameFor(model => model.Brand.First().Image)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Brand[0].CreateBy)
+                @Html.DisplayNameFor(model => model.Brand.First().Note)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Brand[0].CreateAt)
+                @Html.DisplayNameFor(model => model.Brand.First().CreateBy)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Brand[0].UpdateBy)
+                @Html.DisplayNameFor(model => model.Brand.First().CreateAt)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Brand[0].UpdateAt)
+                @Html.DisplayNameFor(model => model.Brand.First().UpdateBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Brand.First().UpdateAt)
             </th>
             <th></th>
         </tr>
@@ -54,6 +58,9 @@
     <tbody>
 @foreach (var item in Model.Brand) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.BrandId)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.BrandName)
             </td>
