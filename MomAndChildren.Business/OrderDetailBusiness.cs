@@ -38,15 +38,21 @@ namespace MomAndChildren.Business
 
         public async Task<IMomAndChildrenResult> GetOrderDetailByIdAsync(int orderDetailId)
         {
-            OrderDetail? orderDetail = await _unitOfWork.OrderDetailRepository.GetOrderDetailByIdAsync(orderDetailId);
-            if (orderDetail == null)
+            if (orderDetailId == 0)
             {
-                return new MomAndChildrenResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
+                return null;
             }
-            else
-            {
-                return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, orderDetail);
-            }
+            else {
+                OrderDetail? orderDetail = await _unitOfWork.OrderDetailRepository.GetOrderDetailByIdAsync(orderDetailId);
+                if (orderDetail == null)
+                {
+                    return new MomAndChildrenResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
+                }
+                else
+                {
+                    return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, orderDetail);
+                }
+            }        
         }
 
         public async Task<IMomAndChildrenResult> GetOrderDetailsAsync()
@@ -72,7 +78,7 @@ namespace MomAndChildren.Business
         public async Task<IMomAndChildrenResult> UpdateOrderDetail(OrderDetail orderDetail)
         {
             await _unitOfWork.OrderDetailRepository.UpdateAsync(orderDetail);
-            return new MomAndChildrenResult(Const.FAIL_UPDATE_CODE, Const.FAIL_UPDATE_MSG);
+            return new MomAndChildrenResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG);
         }
 
         public async Task<IMomAndChildrenResult> DeleteOrderDetail(int detailId)
