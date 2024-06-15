@@ -42,7 +42,10 @@
                         <td>@product.Brand.BrandName</td>
                         <td>@product.Category.CategoryName</td>
                         <td>
-                            <button type="submit" formaction="/Product?handler=Delete&productId=@product.ProductId" class="btn btn-danger">Delete</button>
+                            <div>
+                                <button type="submit" formaction="/Product?handler=Delete&productId=@product.ProductId" class="btn btn-danger">Delete</button>
+                                <button type="submit" formaction="/Product?handler=Update&productId=@product.ProductId" class="btn btn-primary">Update</button>
+                            </div>
                         </td>
                     </tr>
                 }
@@ -269,47 +272,3 @@ else
         }
     </script>
 }
-
-@* @section Scripts {
-    <script>
-        function validateAddProductForm() {
-            var isValid = true;
-            var productId = document.getElementById('ProductId').value;
-            var quantity = document.getElementById('Quantity').value;
-
-            var productIdError = document.getElementById('productIdError');
-            var quantityError = document.getElementById('quantityError');
-
-            if (productId == "0") {
-                productIdError.innerText = "Please select a valid product.";
-                isValid = false;
-            } else {
-                productIdError.innerText = "";
-            }
-
-            if (quantity < 1) {
-                quantityError.innerText = "Quantity must be at least 1.";
-                isValid = false;
-            } else {
-                quantityError.innerText = "";
-            }
-
-            return isValid;
-        }
-
-        function validateAddOrderIdForm() {
-            var isValid = true;
-            var orderId = document.getElementById('OrderId').value;
-
-            var orderIdError = document.getElementById('orderIdError');
-
-            if (orderId == "0") {
-                orderIdError.innerText = "Please select a valid orderId.";
-                isValid = false;
-            } else {
-                orderIdError.innerText = "";
-            }
-            return isValid;
-        }
-    </script>
-} *@
