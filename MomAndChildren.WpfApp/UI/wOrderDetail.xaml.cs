@@ -27,7 +27,6 @@ namespace MomAndChildrenWpfApp.UI
         private readonly OrderDetailBusiness _orderDetailBusiness;
         private readonly OrderBusiness _orderBusiness;
         private readonly ProductBusiness _productBusiness;
-        private readonly UnitOfWork _unitOfWork;
         public List<Order> Orders { get; set; }
         public List<Product> Products { get; set; }
 
@@ -38,7 +37,6 @@ namespace MomAndChildrenWpfApp.UI
             this._orderDetailBusiness ??= new OrderDetailBusiness();
             this._orderBusiness ??= new OrderBusiness();
             this._productBusiness ??= new ProductBusiness();
-            _unitOfWork ??= new UnitOfWork();
             this.LoadGrdOrderDetails();
             this.LoadOrdersAndProducts();
         }
@@ -62,35 +60,57 @@ namespace MomAndChildrenWpfApp.UI
             {
                 var item = await _orderDetailBusiness.GetOrderDetailByIdAsync(idTmp);
 
-                if (item.Data == null)
+                if (item == null)
                 {
-                    if (cmbProductId.Text == null || int.Parse(cmbProductId.Text) == 0)
+                    if (cmbOrderId.Text == null || int.Parse(cmbProductId.Text) == 0)
                     {
                         MessageBox.Show("Please select ProductId and OrderId!", "OK");
                     }
                     else
                     {
                         int orderId = int.Parse(cmbOrderId.Text);
+                        int productId = int.Parse(cmbProductId.Text);
+                        int quantity = int.Parse(txtQuantity.Text);
 
-                    List<CartItem> cartItems = new List<CartItem>();
+                        var product = _productBusiness.GetProductByIdAsync(productId).Result.Data as Product;
 
-                    var product = _unitOfWork.ProductRepository.GetById(1);
 
-                        cartItems.Add(new CartItem { ProductId = int.Parse(cmbProductId.Text), Product = product, Quantity = int.Parse(txtQuantity.Text) });
-
-                    var result = await _orderDetailBusiness.CreateOrderDetail(orderId, cartItems);
-                    MessageBox.Show(result.Message, "Save");
+                        OrderDetail orderDetailCreated = new OrderDetail();
+                        orderDetailCreated.ProductId = productId;
+                        orderDetailCreated.OrderId = orderId;
+                        orderDetailCreated.UnitPrice = product.Price;
+                        orderDetailCreated.Quantity = quantity;
+                        orderDetailCreated.TotalPrice = product.Price * quantity;
+                        orderDetailCreated.CreateBy = "nducson";
+                        orderDetailCreated.CreateAt = DateTime.Now;
+                        orderDetailCreated.UpdateBy = "nducson";
+                        orderDetailCreated.UpdateAt = DateTime.Now;
+                        var result = await _orderDetailBusiness.CreateOrderDetail(orderDetailCreated);
+                        MessageBox.Show(result.Message, "Save");
                         cmbProductId.IsEnabled = true;
                         cmbOrderId.IsEnabled = true;
                     }                   
                 }
                 else
                 {
-                    var orderDetail = item.Data as OrderDetail;
-                    orderDetail.OrderDetailId = int.Parse(txtOrderDetailId.Text);
-                    orderDetail.Quantity = int.Parse(txtQuantity.Text);
-                    //currency.CurrencyCode = txtCurrencyCode.Text;
-                    var result = await _orderDetailBusiness.UpdateOrderDetailQuantity(orderDetail.OrderDetailId, orderDetail.Quantity);
+                    int orderId = int.Parse(cmbOrderId.Text);
+                    int productId = int.Parse(cmbProductId.Text);
+                    int quantity = int.Parse(txtQuantity.Text);
+
+                    var product = _productBusiness.GetProductByIdAsync(productId).Result.Data as Product;
+
+                    var orderDetailUpdated = item.Data as OrderDetail;
+                    orderDetailUpdated.OrderDetailId = int.Parse(txtOrderDetailId.Text);
+                    orderDetailUpdated.ProductId = productId;
+                    orderDetailUpdated.OrderId = orderId;
+                    orderDetailUpdated.UnitPrice = product.Price;
+                    orderDetailUpdated.Quantity = quantity;
+                    orderDetailUpdated.TotalPrice = product.Price * quantity;
+                    orderDetailUpdated.CreateBy = "nducson";
+                    orderDetailUpdated.CreateAt = DateTime.Now;
+                    orderDetailUpdated.UpdateBy = "nducson";
+                    orderDetailUpdated.UpdateAt = DateTime.Now;
+                    var result = await _orderDetailBusiness.UpdateOrderDetail(orderDetailUpdated);
                     MessageBox.Show(result.Message, "Update");
                     cmbProductId.IsEnabled = true;
                     cmbOrderId.IsEnabled = true;

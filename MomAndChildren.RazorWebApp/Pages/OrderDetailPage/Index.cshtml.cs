@@ -8,50 +8,51 @@ using Microsoft.EntityFrameworkCore;
 using MomAndChildren.Business;
 using MomAndChildren.Data.Models;
 
-namespace MomAndChildren.RazorWebApp.Pages.BrandPage
+namespace MomAndChildren.RazorWebApp.Pages.OrderDetailPage
 {
     public class IndexModel : PageModel
     {
-        private readonly IBrandBusiness business;
+        private readonly IOrderDetailBusiness _orderDetail;
 
-        public IndexModel()
+        public IndexModel(IOrderDetailBusiness orderDetail)
         {
-            business ??= new BrandBusiness();
+            _orderDetail = orderDetail;
         }
-
-        public IEnumerable<Brand> Brand { get; set; } = default!;
 
         public int CurrentPage { get; set; } = 1;
         public int TotalPages { get; set; }
+        public string? Description { get; set; }
 
-        public string? Name { get; set; }
+        public IEnumerable<OrderDetail> OrderDetail { get;set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, string searchTerm = "")
         {
-            var result = await business.GetBrandsAsync();
+            var result = await _orderDetail.GetOrderDetailsAsync();
 
             //Paging
             CurrentPage = currentPage;
             int pageSize = 5;
+            var orderDetail = await _orderDetail.GetOrderDetailsAsync();
 
             //Search
             if (result != null && result.Status > 0 && result.Data != null)
             {
-                Brand = result.Data as List<Brand>;
+                OrderDetail = orderDetail.Data as List<OrderDetail>;
             }
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                result = await business.SearchByKeyword(searchTerm);
-                Brand = result.Data as List<Brand>;
+                result = await _orderDetail.SearchByProductName(searchTerm);
+                OrderDetail = result.Data as List<OrderDetail>;
 
                 return Page();
             }
 
-            int totalBrand = Brand.Count();
-            TotalPages = (int)Math.Ceiling((double)totalBrand / pageSize);
 
-            Brand = Brand.Skip((currentPage - 1) * pageSize).Take(pageSize);
+            int totalOrderDetail = OrderDetail.Count();
+            TotalPages = (int)Math.Ceiling((double)totalOrderDetail / pageSize);
+
+            OrderDetail = OrderDetail.Skip((currentPage - 1) * pageSize).Take(pageSize);
 
             return Page();
         }
