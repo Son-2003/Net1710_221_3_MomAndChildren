@@ -13,6 +13,8 @@ builder.Services.AddScoped<IPaymentHistoryBusiness, PaymentHistoryBusiness>();
 builder.Services.AddScoped<IOrderBusiness, OrderBusiness>();
 builder.Services.AddScoped<IOrderDetailBusiness, OrderDetailBusiness>();
 builder.Services.AddScoped<IProductBusiness, ProductBusiness>();
+builder.Services.AddScoped<ICategoryBusiness, CategoryBusiness>();
+builder.Services.AddScoped<IBrandBusiness, BrandBusiness>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

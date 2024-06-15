@@ -18,5 +18,10 @@ namespace MomAndChildren.Data.Repositories
             List<Product> products = _context.Products.Include(x => x.Brand).Include(x=>x.Category).ToList();
             return products;
         }
+        public Product getProductByIdAsync(int id)
+        {
+            Product product = _context.Products.Include(x => x.Brand).Include(x => x.Category).FirstOrDefault(x => x.ProductId == id);
+            return product;
+        }
     }
 }
