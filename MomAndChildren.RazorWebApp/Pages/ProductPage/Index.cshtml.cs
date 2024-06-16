@@ -19,7 +19,7 @@ namespace MomAndChildren.RazorWebApp.Pages.ProductPage
             business ??= new ProductBusiness();
         }
 
-        public IList<Product> Product { get;set; } = default!;
+        public IEnumerable<Product> Product { get;set; } = default!;
         public int CurrentPage { get; set; } = 1;
         public int TotalPages { get; set; }
         public string? Name { get; set; }
@@ -49,7 +49,7 @@ namespace MomAndChildren.RazorWebApp.Pages.ProductPage
             int totalProduct = Product.Count();
             TotalPages = (int)Math.Ceiling((double)totalProduct / pageSize);
 
-            //Product = (IList<Product>)Product.Skip((currentPage - 1) * pageSize).Take(pageSize);
+            Product = Product.Skip((currentPage - 1) * pageSize).Take(pageSize);
 
             return Page();
         }
