@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MomAndChildren.RazorWebApp"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MomAndChildren.WpfApp", "MomAndChildren.WpfApp\MomAndChildren.WpfApp.csproj", "{DD3E7CD3-8497-4C77-B231-1E02CAC03CEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MomAndChildren.Data", "MomAndChildren.Data\MomAndChildren.Data.csproj", "{F8B52D69-F237-4784-B241-0DEF3D3CA44B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MomAndChildren.Data", "MomAndChildren.Data\MomAndChildren.Data.csproj", "{F8B52D69-F237-4784-B241-0DEF3D3CA44B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

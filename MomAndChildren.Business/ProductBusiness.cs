@@ -1,6 +1,7 @@
 ﻿using MomAndChildren.Common;
 using MomAndChildren.Data;
 using MomAndChildren.Data.Models;
+using MomAndChildren.Data.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,16 @@ using System.Threading.Tasks;
 
 namespace MomAndChildren.Business
 {
-
     public interface IProductBusiness
     {
         Task<IMomAndChildrenResult> GetProductsAsync();
+        Task<IMomAndChildrenResult> GetProductsWithNestedObjAsync();
         Task<IMomAndChildrenResult> GetProductByIdAsync(int id);
+        Task<IMomAndChildrenResult> GetProductByIdWithNestedObjAsync(int id);
         Task<IMomAndChildrenResult> CreateProduct(Product product);
         Task<IMomAndChildrenResult> UpdateProduct(Product product);
         Task<IMomAndChildrenResult> DeleteProduct(int productId);
+        Task<IMomAndChildrenResult> SearchByKeyword(string? searchTerm);
         bool ProductExists(int id);
     }
 
@@ -24,9 +27,12 @@ namespace MomAndChildren.Business
     {
         private readonly UnitOfWork _unitOfWork;
 
+        private readonly ProductRepository ProductRepository;
+
         public ProductBusiness()
         {
             _unitOfWork ??= new UnitOfWork();
+            ProductRepository = new ProductRepository();
         }
 
         public async Task<IMomAndChildrenResult> CreateProduct(Product product)
@@ -36,7 +42,6 @@ namespace MomAndChildren.Business
                 return new MomAndChildrenResult(-1, "Product id is duplicate");
             }
             await _unitOfWork.ProductRepository.CreateAsync(product);
-            await _unitOfWork.ProductRepository.SaveAsync();
             return new MomAndChildrenResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG);
         }
 
@@ -50,7 +55,6 @@ namespace MomAndChildren.Business
             else
             {
                 await _unitOfWork.ProductRepository.RemoveAsync(product);
-                await _unitOfWork.ProductRepository.SaveAsync();
                 return new MomAndChildrenResult(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG);
             }
         }
@@ -71,6 +75,20 @@ namespace MomAndChildren.Business
         public async Task<IMomAndChildrenResult> GetProductsAsync()
         {
             List<Product> products = await _unitOfWork.ProductRepository.GetAllAsync();
+            if (products == null)
+            {
+                return new MomAndChildrenResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
+            }
+            return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, products);
+        }
+
+        public async Task<IMomAndChildrenResult> GetProductsWithNestedObjAsync()
+        {
+            List<Product> products = ProductRepository.getProductsAsync();
+            if (products == null)
+            {
+                return new MomAndChildrenResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
+            }
             return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, products);
         }
 
@@ -81,9 +99,51 @@ namespace MomAndChildren.Business
 
         public async Task<IMomAndChildrenResult> UpdateProduct(Product product)
         {
-            await _unitOfWork.ProductRepository.UpdateAsync(product);
-            await _unitOfWork.ProductRepository.SaveAsync();
+            Product product1 = await _unitOfWork.ProductRepository.GetByIdAsync(product.ProductId);
+            if (product1 == null)
+            {
+                return new MomAndChildrenResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA__MSG);
+            }
+            else
+            {
+                product1.ProductName = product.ProductName;
+                product1.Description = product.Description;
+                product1.Price = product.Price;
+                product1.Quantity = product.Quantity;
+                product1.CategoryId = product.CategoryId;
+                product1.BrandId = product.BrandId;
+                product1.Status = product.Status;
+                product1.ManufacturingDate = product.ManufacturingDate;
+                product1.ExpireDate = product.ExpireDate;
+                await _unitOfWork.ProductRepository.UpdateAsync(product1);
+            }
             return new MomAndChildrenResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG);
+        }
+
+        public async Task<IMomAndChildrenResult> SearchByKeyword(string? searchTerm)
+        {
+            try
+            {
+                var products = await _unitOfWork.ProductRepository.GetAllAsync();
+                var result = products.Where(c => c.ProductName.ToLower().Contains(searchTerm.ToLower())
+                    || c.Description.ToLower().Contains(searchTerm.ToLower())
+                    ).ToList();
+                return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+            }
+            catch (Exception ex)
+            {
+                return new MomAndChildrenResult(Const.ERROR_EXCEPTION, ex.Message);
+            }
+        }
+
+        public async Task<IMomAndChildrenResult> GetProductByIdWithNestedObjAsync(int id)
+        {
+            Product products = ProductRepository.getProductByIdAsync(id);
+            if (products == null)
+            {
+                return new MomAndChildrenResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
+            }
+            return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, products);
         }
     }
 }
