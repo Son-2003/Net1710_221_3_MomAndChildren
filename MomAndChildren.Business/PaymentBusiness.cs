@@ -7,34 +7,35 @@ using MomAndChildren.Data.Models;
 
 namespace MomAndChildren.Business
 {
-    public interface IPaymentHistoryBusiness
+    public interface IPaymentBusiness
     {
-        Task<IMomAndChildrenResult> GetPaymentHistoryList();
-        Task<IMomAndChildrenResult> GetPaymentHistoryListByCustomerIdAsync(int id);
-        Task<IMomAndChildrenResult> GetPaymentHistoryByIdAsync(int id);
-        Task<IMomAndChildrenResult> CreatePaymentHistory(Payment paymentHistory);
+        Task<IMomAndChildrenResult> GetPaymentList();
+        Task<IMomAndChildrenResult> GetPaymentListByCustomerIdAsync(int id);
+        Task<IMomAndChildrenResult> GetPaymentByIdAsync(int id);
+        Task<IMomAndChildrenResult> CreatePayment(Payment paymentHistory);
         Task<IMomAndChildrenResult> UpdatePayment(Payment paymentHistory);
         Task<IMomAndChildrenResult> RemovePayment(int id);
     }
 
-    public class PaymentHistoryBusiness : IPaymentHistoryBusiness
+    public class PaymentBusiness : IPaymentBusiness
     {
         /*private readonly Net1710_221_3_MomAndChildrenContext _context;
         private readonly PaymentHistoryDAO _DAO;*/
         private readonly UnitOfWork _unitOfWork;
 
-        public PaymentHistoryBusiness()
+        public PaymentBusiness()
         {
             _unitOfWork ??= new UnitOfWork();
         }
 
 
-        public async Task<IMomAndChildrenResult> CreatePaymentHistory(Payment payment)
+        public async Task<IMomAndChildrenResult> CreatePayment(Payment payment)
         {
             try
             {
-                _unitOfWork.PaymentHistoryRepository.PrepareCreate(payment);
-                int result = await _unitOfWork.PaymentHistoryRepository.SaveAsync();
+                payment.CreateAt = DateTime.Now;
+                _unitOfWork.PaymentRepository.PrepareCreate(payment);
+                int result = await _unitOfWork.PaymentRepository.SaveAsync();
                 if (result > 0)
                 {
                     return new MomAndChildrenResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG);
@@ -50,11 +51,11 @@ namespace MomAndChildren.Business
             }
         }
 
-        public async Task<IMomAndChildrenResult> GetPaymentHistoryByIdAsync(int id)
+        public async Task<IMomAndChildrenResult> GetPaymentByIdAsync(int id)
         {
             try
             {
-                var payment = await _unitOfWork.PaymentHistoryRepository.GetByIdAsync(id);
+                var payment = await _unitOfWork.PaymentRepository.GetByIdAsync(id);
                 if (payment == null) return new MomAndChildrenResult(Const.WARNING_NO_DATA_CODE, "Payment not found with id: " + id);
                 else return new MomAndChildrenResult(Const.SUCCESS_READ_CODE, "Get Payment by id: " + id + " successfully", payment);
             }
@@ -64,11 +65,11 @@ namespace MomAndChildren.Business
             }
         }
 
-        public async Task<IMomAndChildrenResult> GetPaymentHistoryListByCustomerIdAsync(int id)
+        public async Task<IMomAndChildrenResult> GetPaymentListByCustomerIdAsync(int id)
         {
             try
             {
-                var paymentList = await _unitOfWork.PaymentHistoryRepository.GetPaymentHistoryListByCustomerId(id);
+                var paymentList = await _unitOfWork.PaymentRepository.GetPaymentListByCustomerId(id);
                 if (paymentList == null)
                 {
                     return new MomAndChildrenResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA__MSG);
@@ -84,11 +85,11 @@ namespace MomAndChildren.Business
             }
         }
 
-        public async Task<IMomAndChildrenResult> GetPaymentHistoryList()
+        public async Task<IMomAndChildrenResult> GetPaymentList()
         {
             try
             {
-                var list = await _unitOfWork.PaymentHistoryRepository.GetAllAsync();
+                var list = await _unitOfWork.PaymentRepository.GetAllAsync();
                 if (list == null)
                 {
                     return new MomAndChildrenResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA__MSG);
@@ -108,8 +109,8 @@ namespace MomAndChildren.Business
         {
             try
             {
-                _unitOfWork.PaymentHistoryRepository.PrepareUpdate(paymentHistory);
-                var result = await _unitOfWork.PaymentHistoryRepository.SaveAsync();
+                _unitOfWork.PaymentRepository.PrepareUpdate(paymentHistory);
+                var result = await _unitOfWork.PaymentRepository.SaveAsync();
                 if (result > 0)
                 {
                     return new MomAndChildrenResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG);
@@ -129,9 +130,9 @@ namespace MomAndChildren.Business
         {
             try
             {
-                var removedItem = _unitOfWork.PaymentHistoryRepository.GetById(id);
-                _unitOfWork.PaymentHistoryRepository.PrepareRemove(removedItem);
-                var result = await _unitOfWork.PaymentHistoryRepository.SaveAsync();
+                var removedItem = _unitOfWork.PaymentRepository.GetById(id);
+                _unitOfWork.PaymentRepository.PrepareRemove(removedItem);
+                var result = await _unitOfWork.PaymentRepository.SaveAsync();
                 if (result > 0)
                 {
                     return new MomAndChildrenResult(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG);
