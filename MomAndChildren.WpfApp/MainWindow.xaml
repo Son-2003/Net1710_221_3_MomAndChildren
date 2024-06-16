@@ -15,8 +15,9 @@
                 </MenuItem>
                 <MenuItem Header="Brand" IsCheckable="False" FontSize="12" Click="Open_wBrand_Click">
                 </MenuItem>
+                <MenuItem Header="Product" IsCheckable="False" FontSize="12" Click="Open_wProduct_Click">
+                </MenuItem>
             </MenuItem>
-
         </Menu>
     </Grid>
 </Window>
