@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MomAndChildren.WpfApp.UI
 {
@@ -29,7 +30,7 @@ namespace MomAndChildren.WpfApp.UI
             InitializeComponent();
             this._paymentBusiness ??= new PaymentBusiness();
             this._orderBusiness ??= new OrderBusiness();
-            this.LoadGrdCategories();
+            this.LoadGrdPayments();
         }
 
         private async void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -40,56 +41,53 @@ namespace MomAndChildren.WpfApp.UI
             {
                 var item = await _paymentBusiness.GetPaymentByIdAsync(idTmp);
 
-                int status = 0;
-                if (chkIsActive.IsChecked == true) { status = 1; }
-                else { status = 0; }
                 if (item.Data == null)
                 {
 
                     var Payment = new Payment()
                     {
-                        PaymentName = txtPaymentName.Text,
-                        Description = txtPaymentDescription.Text,
-                        Status = status,
-                        Image = txtPaymentImage.Text,
-                        Note = txtPaymentNote.Text,
-                        CreateBy = txtPaymentCreateBy.Text,
+                        PaymentMethod = txtPaymentMethod.Text,
+                        Status = (int)cbbStatus.SelectedValue,
+                        PaymentDate = DateTime.Parse(dpPaymentDate.Text),
                         CreateAt = DateTime.Parse(dpPaymentCreatedAt.Text),
-                        UpdateBy = txtPaymentUpdateBy.Text,
-                        UpdateAt = DateTime.Parse(dpPaymentUpdatedAt.Text)
+                        UpdateAt = DateTime.Parse(dpPaymentUpdatedAt.Text),
+                        Note = txtPaymentNote.Text,
+                        BillingAddress = txtBillingAddress.Text,
+                        Currency = txtCurrency.Text,
+                        OrderId = int.Parse(cbbOrderId.Text)
                     };
 
-                    var result = await _business.CreatePayment(Payment);
+                    var result = await _paymentBusiness.CreatePayment(Payment);
                     MessageBox.Show(result.Message, "Save");
                 }
                 else
                 {
                     var Payment = item.Data as Payment;
-                    Payment.PaymentName = txtPaymentName.Text;
-                    Payment.Description = txtPaymentDescription.Text;
-                    Payment.Status = status;
-                    Payment.Image = txtPaymentImage.Text;
-                    Payment.Note = txtPaymentNote.Text;
-                    Payment.CreateBy = txtPaymentCreateBy.Text;
+                    Payment.PaymentMethod = txtPaymentMethod.Text;
+                    Payment.Status = (int)cbbStatus.SelectedValue;
+                    Payment.PaymentDate = DateTime.Parse(dpPaymentDate.Text);
                     Payment.CreateAt = DateTime.Parse(dpPaymentCreatedAt.Text);
-                    Payment.UpdateBy = txtPaymentUpdateBy.Text;
                     Payment.UpdateAt = DateTime.Parse(dpPaymentUpdatedAt.Text);
+                    Payment.Note = txtPaymentNote.Text;
+                    Payment.BillingAddress = txtBillingAddress.Text;
+                    Payment.Currency = txtCurrency.Text;
+                    Payment.OrderId = int.Parse(cbbOrderId.Text);
 
-                    var result = await _business.UpdatePayment(Payment);
+                    var result = await _paymentBusiness.UpdatePayment(Payment);
                     MessageBox.Show(result.Message, "Update");
                 }
 
                 txtPaymentId.Text = string.Empty;
-                txtPaymentName.Text = string.Empty;
-                txtPaymentDescription.Text = string.Empty;
-                txtPaymentCreateBy.Text = string.Empty;
-                txtPaymentUpdateBy.Text = string.Empty;
-                txtPaymentImage.Text = string.Empty;
-                txtPaymentNote.Text = string.Empty;
-                chkIsActive.IsChecked = false;
+                txtPaymentMethod.Text = string.Empty;
+                cbbStatus.Text = string.Empty;
+                dpPaymentDate.Text = string.Empty;
                 dpPaymentCreatedAt.SelectedDate = null;
                 dpPaymentUpdatedAt.SelectedDate = null;
-                this.LoadGrdCategories();
+                txtBillingAddress.Text = string.Empty;
+                txtPaymentNote.Text = string.Empty;
+                txtCurrency.Text = string.Empty;
+                cbbOrderId.Text = string.Empty;
+                this.LoadGrdPayments();
             }
             catch (Exception ex)
             {
@@ -123,7 +121,7 @@ namespace MomAndChildren.WpfApp.UI
                 {
                     var result = await _paymentBusiness.RemovePayment(int.Parse(PaymentId));
                     MessageBox.Show($"{result.Message}", "Delete");
-                    this.LoadGrdCategories();
+                    this.LoadGrdPayments();
                 }
             }
         }
@@ -145,14 +143,13 @@ namespace MomAndChildren.WpfApp.UI
                         {
                             item = PaymentResult.Data as Payment;
                             txtPaymentId.Text = item.PaymentId.ToString();
-                            txtPaymentName.Text = item.PaymentName;
-                            txtPaymentDescription.Text = item.Description;
-                            chkIsActive.IsChecked = Convert.ToBoolean(item.Status);
-                            txtPaymentCreateBy.Text = item.CreateBy;
+                            txtPaymentMethod.Text = item.PaymentMethod;
+                            cbbStatus.Text = Convert.ToString(item.Status);
+                            dpPaymentDate.SelectedDate = item.PaymentDate;
                             dpPaymentCreatedAt.SelectedDate = item.CreateAt;
-                            txtPaymentUpdateBy.Text = item?.UpdateBy;
                             dpPaymentUpdatedAt.SelectedDate = item?.UpdateAt;
-                            txtPaymentImage.Text = item?.Image;
+                            txtBillingAddress.Text = item?.BillingAddress;
+                            txtCurrency.Text = item?.Currency;
                             txtPaymentNote.Text = item?.Note;
                         }
                     }
@@ -160,7 +157,7 @@ namespace MomAndChildren.WpfApp.UI
             }
         }
 
-        private async void LoadGrdCategories()
+        private async void LoadGrdPayments()
         {
             var result = await _paymentBusiness.GetPaymentList();
 
@@ -173,5 +170,6 @@ namespace MomAndChildren.WpfApp.UI
                 grdPayment.ItemsSource = new List<Payment>();
             }
         }
+
     }
 }

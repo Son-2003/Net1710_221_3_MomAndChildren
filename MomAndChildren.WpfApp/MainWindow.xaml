@@ -15,10 +15,11 @@
                 </MenuItem>
                 <MenuItem Header="Brand" IsCheckable="False" FontSize="12" Click="Open_wBrand_Click">
                 </MenuItem>
-                <MenuItem Header="Brand" IsCheckable="False" FontSize="12" Click="Open_wPaymnet_Click">
+                <MenuItem Header="Product" IsCheckable="False" FontSize="12" Click="Open_wProduct_Click">
+                </MenuItem>
+                <MenuItem Header="Payment" IsCheckable="False" FontSize="12" Click="Open_wPayment_Click">
                 </MenuItem>
             </MenuItem>
-
         </Menu>
     </Grid>
 </Window>
