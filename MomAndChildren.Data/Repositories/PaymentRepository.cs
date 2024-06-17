@@ -20,5 +20,24 @@ namespace MomAndChildren.Data.Repositories
                 .OrderByDescending(x => x.PaymentId)
                 .ToListAsync();
         }
+        public bool IsOrderInUse(int orderId)
+        {
+            return _context.Payments.Any(p => p.Order.OrderId == orderId);
+        }
+
+        public async Task<List<Payment>> GetAllPaymentAsync()
+        {
+            return await _context.Payments.Include(p => p.Order).ToListAsync();
+        }
+
+        public void Attach(Payment payment)
+        {
+            _context.Attach(payment);
+        }
+
+        public Payment GetPaymentById(int id)
+        {
+            return _context.Payments.Include(p => p.Order).FirstOrDefault();
+        }
     }
 }
