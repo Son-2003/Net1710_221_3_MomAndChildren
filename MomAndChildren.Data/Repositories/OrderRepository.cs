@@ -14,14 +14,26 @@ namespace MomAndChildren.Data.Repositories
         public OrderRepository()
         {
         }
+
         public OrderRepository(Net1710_221_3_MomAndChildrenContext context) => _context = context;
+
+        //public async Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(int customerId)
+        //{
+        //    return await _context.Orders.Where(o => o.CustomerId == customerId).ToListAsync();
+        //}
+
+
+        public async Task<List<Order>> GetAllOrderAsync()
+        {
+            return await _context.Orders.OrderByDescending(tmp => tmp.OrderId).Include("Customer").ToListAsync();
+        }
         public async Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(int customerId)
         {
             return await _context.Orders.Where(o => o.CustomerId == customerId).ToListAsync();
         }
         public async Task<IEnumerable<Order>> GetOrdersWherePaymentIsNotNullAsync()
         {
-            return await _context.Orders.Where(o => o.Payments != null && o.OrderDetails.Count > 0 ).ToListAsync();
+            return await _context.Orders.Where(o => o.Payments != null && o.OrderDetails.Count > 0).ToListAsync();
         }
     }
 }

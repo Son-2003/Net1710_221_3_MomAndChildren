@@ -1,0 +1,73 @@
+﻿@page
+@model MomAndChildren.RazorWebApp.Pages.OrderPage.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Order</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Order.TotalPrice" class="control-label"></label>
+                <input asp-for="Order.TotalPrice" class="form-control" />
+                <span asp-validation-for="Order.TotalPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.OrderDate" class="control-label"></label>
+                <input asp-for="Order.OrderDate" class="form-control" />
+                <span asp-validation-for="Order.OrderDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.TotalQuantity" class="control-label"></label>
+                <input asp-for="Order.TotalQuantity" class="form-control" />
+                <span asp-validation-for="Order.TotalQuantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.ShippingDate" class="control-label"></label>
+                <input asp-for="Order.ShippingDate" class="form-control" />
+                <span asp-validation-for="Order.ShippingDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.ShippingMethod" class="control-label"></label>
+                <input asp-for="Order.ShippingMethod" class="form-control" />
+                <span asp-validation-for="Order.ShippingMethod" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.OrderNote" class="control-label"></label>
+                <input asp-for="Order.OrderNote" class="form-control" />
+                <span asp-validation-for="Order.OrderNote" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.CreateAt" class="control-label"></label>
+                <input asp-for="Order.CreateAt" class="form-control" />
+                <span asp-validation-for="Order.CreateAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.UpdateAt" class="control-label"></label>
+                <input asp-for="Order.UpdateAt" class="form-control" />
+                <span asp-validation-for="Order.UpdateAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.CustomerId" class="control-label"></label>
+                <select asp-for="Order.CustomerId" class ="form-control" asp-items="ViewBag.CustomerId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

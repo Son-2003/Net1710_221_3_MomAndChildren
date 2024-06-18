@@ -22,6 +22,7 @@ namespace MomAndChildren.Data
 
         private BrandRepository _brand;
 
+        private CustomerRepository _customer;
         public UnitOfWork()
         {
             _unitOfWorkContext = new Net1710_221_3_MomAndChildrenContext();
@@ -61,6 +62,16 @@ namespace MomAndChildren.Data
                 return _order ??= new Repositories.OrderRepository();
             }
         }
+
+
+        public CustomerRepository CustomerRepository
+        {
+            get
+            {
+                return _customer ??= new Repositories.CustomerRepository();
+            }
+        }
+
 
         ////TO-DO CODE HERE/////////////////
 
