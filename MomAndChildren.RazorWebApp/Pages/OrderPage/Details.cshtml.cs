@@ -5,36 +5,37 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using MomAndChildren.Business;
 using MomAndChildren.Data.Models;
 
 namespace MomAndChildren.RazorWebApp.Pages.OrderPage
 {
     public class DetailsModel : PageModel
     {
-        private readonly MomAndChildren.Data.Models.Net1710_221_3_MomAndChildrenContext _context;
+        private readonly IOrderBusiness business;
 
-        public DetailsModel(MomAndChildren.Data.Models.Net1710_221_3_MomAndChildrenContext context)
+        public DetailsModel()
         {
-            _context = context;
+            business ??= new OrderBusiness();
         }
 
         public Order Order { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            if (id == null || _context.Orders == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders.FirstOrDefaultAsync(m => m.OrderId == id);
+            var order = await business.GetOrderByIdAsync(id);
             if (order == null)
             {
                 return NotFound();
             }
             else
             {
-                Order = order;
+                Order = order.Data as Order;
             }
             return Page();
         }

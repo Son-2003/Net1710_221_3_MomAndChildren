@@ -17,7 +17,7 @@ namespace MomAndChildren.Business
         Task<IMomAndChildrenResult> DeleteCustomer(int customerId);
 
         Task<IMomAndChildrenResult> GetCustomerByIdAsync(int customerId);
-        Task<IMomAndChildrenResult> GetCustomersAsync();
+        Task<IMomAndChildrenResult>? GetCustomersAsync();
 
         Task<IMomAndChildrenResult> SearchByCustomerName(string? searchTerm);
     }
@@ -34,7 +34,7 @@ namespace MomAndChildren.Business
             _unitOfWork ??= new UnitOfWork();
         }
 
-        public async Task<IMomAndChildrenResult> GetCustomersAsync()
+        public async Task<IMomAndChildrenResult>? GetCustomersAsync()
         {
             try
             {

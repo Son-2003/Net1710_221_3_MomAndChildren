@@ -118,15 +118,17 @@ namespace MomAndChildren.Business
         {
             try
             {
-                var customers = await _unitOfWork.CustomerRepository.GetAllAsync();
-
-                foreach(var customer in customers)
-                {
-                    if(!(order.CustomerId == customer.CustomerId))
-                    {
-                        return new MomAndChildrenResult(Const.FAIL_CREATE_CODE, "Customer does not exist");
-                    }
-                }
+                //var customers = await _unitOfWork.CustomerRepository.GetAllAsync();
+                   
+                //foreach (var customer in customers)
+                //    {
+                //        if (!(order.CustomerId == customer.CustomerId))
+                //        {
+                //            return new MomAndChildrenResult(Const.FAIL_CREATE_CODE, "Customer does not exist");
+                //        }
+                //    }
+                
+                
 
                 int result = await _unitOfWork.OrderRepository.CreateAsync(order);
 
@@ -171,15 +173,15 @@ namespace MomAndChildren.Business
         {
             try
             {
-                var customers = await _unitOfWork.CustomerRepository.GetAllAsync();
+                //var customers = await _unitOfWork.CustomerRepository.GetAllAsync();
 
-                foreach (var customer in customers)
-                {
-                    if (!(order.CustomerId == customer.CustomerId))
-                    {
-                        return new MomAndChildrenResult(Const.FAIL_CREATE_CODE, "Customer does not exist");
-                    }
-                }
+                //foreach (var customer in customers)
+                //{
+                //    if (!(order.CustomerId == customer.CustomerId))
+                //    {
+                //        return new MomAndChildrenResult(Const.FAIL_CREATE_CODE, "Customer does not exist");
+                //    }
+                //}
                 var newOrder = await _unitOfWork.OrderRepository.GetByIdAsync(order.OrderId);
                 if (newOrder != null)
                 {

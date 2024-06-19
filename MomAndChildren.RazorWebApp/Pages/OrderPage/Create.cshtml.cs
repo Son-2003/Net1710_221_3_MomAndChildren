@@ -21,14 +21,16 @@ namespace MomAndChildren.RazorWebApp.Pages.OrderPage
             customer ??= new CustomerBusiness();
         }
 
-        public IActionResult OnGet()
+       
+
+        [BindProperty]
+        public Order Order { get; set; } = default!;
+
+        public async Task<IActionResult> OnGetAsync()
         {
             ViewData["CustomerId"] = new SelectList((List<Customer>)customer.GetCustomersAsync().Result.Data, "CustomerId", "CustomerId");
             return Page();
         }
-
-        [BindProperty]
-        public Order Order { get; set; } = default!;
 
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
