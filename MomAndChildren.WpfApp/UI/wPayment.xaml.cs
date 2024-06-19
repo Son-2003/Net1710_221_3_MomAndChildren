@@ -1,4 +1,5 @@
-﻿using MomAndChildren.Business;
+﻿using Microsoft.IdentityModel.Tokens;
+using MomAndChildren.Business;
 using MomAndChildren.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -31,23 +32,63 @@ namespace MomAndChildren.WpfApp.UI
             this._paymentBusiness ??= new PaymentBusiness();
             this._orderBusiness ??= new OrderBusiness();
             this.LoadGrdPayments();
+            this.LoadOrders();
         }
 
         private async void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
             int idTmp = -1;
-            int.TryParse(txtPaymentId.Text, out idTmp);
+            if(!txtPaymentId.Text.IsNullOrEmpty()) int.TryParse(txtPaymentId.Text, out idTmp);
+            CheckDateNull(dpPaymentDate.Text, dpPaymentCreatedAt.Text, dpPaymentUpdatedAt.Text);
             try
             {
-                var item = await _paymentBusiness.GetPaymentByIdAsync(idTmp);
-
-                if (item.Data == null)
+                if (idTmp >= 0)
                 {
+                    var item = await _paymentBusiness.GetPaymentByIdAsync(idTmp);
+                    if (item.Data == null)
+                    {
+                        // Create new payment if not found
+                        var payment = new Payment()
+                        {
+                            PaymentMethod = txtPaymentMethod.Text,
+                            Status = cbbStatus.Text.Equals("IsPaid") ? 1 : 0,
+                            PaymentDate = DateTime.Parse(dpPaymentDate.Text),
+                            CreateAt = DateTime.Parse(dpPaymentCreatedAt.Text),
+                            UpdateAt = DateTime.Parse(dpPaymentUpdatedAt.Text),
+                            Note = txtPaymentNote.Text,
+                            BillingAddress = txtBillingAddress.Text,
+                            Currency = txtCurrency.Text,
+                            OrderId = int.Parse(cbbOrderId.Text)
+                        };
 
-                    var Payment = new Payment()
+                        var result = await _paymentBusiness.CreatePayment(payment);
+                        MessageBox.Show(result.Message, "Save");
+                    }
+                    else
+                    {
+                        // Update existing payment if found
+                        var payment = item.Data as Payment;
+                        payment.PaymentMethod = txtPaymentMethod.Text;
+                        payment.Status = cbbStatus.Text.Equals("IsPaid") ? 1 : 0;
+                        payment.PaymentDate = DateTime.Parse(dpPaymentDate.Text);
+                        payment.CreateAt = DateTime.Parse(dpPaymentCreatedAt.Text);
+                        payment.UpdateAt = DateTime.Parse(dpPaymentUpdatedAt.Text);
+                        payment.Note = txtPaymentNote.Text;
+                        payment.BillingAddress = txtBillingAddress.Text;
+                        payment.Currency = txtCurrency.Text;
+                        payment.OrderId = int.Parse(cbbOrderId.Text);
+
+                        var result = await _paymentBusiness.UpdatePayment(payment);
+                        MessageBox.Show(result.Message, "Update");
+                    }
+                }
+                else
+                {
+                    // Create new payment directly if idTmp is -1
+                    var payment = new Payment()
                     {
                         PaymentMethod = txtPaymentMethod.Text,
-                        Status = (int)cbbStatus.SelectedValue,
+                        Status = cbbStatus.Text.Equals("IsPaid") ? 1 : 0,
                         PaymentDate = DateTime.Parse(dpPaymentDate.Text),
                         CreateAt = DateTime.Parse(dpPaymentCreatedAt.Text),
                         UpdateAt = DateTime.Parse(dpPaymentUpdatedAt.Text),
@@ -57,26 +98,11 @@ namespace MomAndChildren.WpfApp.UI
                         OrderId = int.Parse(cbbOrderId.Text)
                     };
 
-                    var result = await _paymentBusiness.CreatePayment(Payment);
+                    var result = await _paymentBusiness.CreatePayment(payment);
                     MessageBox.Show(result.Message, "Save");
                 }
-                else
-                {
-                    var Payment = item.Data as Payment;
-                    Payment.PaymentMethod = txtPaymentMethod.Text;
-                    Payment.Status = (int)cbbStatus.SelectedValue;
-                    Payment.PaymentDate = DateTime.Parse(dpPaymentDate.Text);
-                    Payment.CreateAt = DateTime.Parse(dpPaymentCreatedAt.Text);
-                    Payment.UpdateAt = DateTime.Parse(dpPaymentUpdatedAt.Text);
-                    Payment.Note = txtPaymentNote.Text;
-                    Payment.BillingAddress = txtBillingAddress.Text;
-                    Payment.Currency = txtCurrency.Text;
-                    Payment.OrderId = int.Parse(cbbOrderId.Text);
 
-                    var result = await _paymentBusiness.UpdatePayment(Payment);
-                    MessageBox.Show(result.Message, "Update");
-                }
-
+                // Clear form fields
                 txtPaymentId.Text = string.Empty;
                 txtPaymentMethod.Text = string.Empty;
                 cbbStatus.Text = string.Empty;
@@ -87,6 +113,8 @@ namespace MomAndChildren.WpfApp.UI
                 txtPaymentNote.Text = string.Empty;
                 txtCurrency.Text = string.Empty;
                 cbbOrderId.Text = string.Empty;
+
+                // Reload data grid
                 this.LoadGrdPayments();
             }
             catch (Exception ex)
@@ -144,13 +172,21 @@ namespace MomAndChildren.WpfApp.UI
                             item = PaymentResult.Data as Payment;
                             txtPaymentId.Text = item.PaymentId.ToString();
                             txtPaymentMethod.Text = item.PaymentMethod;
-                            cbbStatus.Text = Convert.ToString(item.Status);
+                            foreach (ComboBoxItem cbbItem in cbbStatus.Items)
+                            {
+                                if ((cbbItem.Content.Equals("IsPaid") ? 1 : 0) == item.Status)
+                                {
+                                    cbbStatus.SelectedItem = cbbItem;
+                                    break;
+                                }
+                            }
                             dpPaymentDate.SelectedDate = item.PaymentDate;
                             dpPaymentCreatedAt.SelectedDate = item.CreateAt;
                             dpPaymentUpdatedAt.SelectedDate = item?.UpdateAt;
                             txtBillingAddress.Text = item?.BillingAddress;
                             txtCurrency.Text = item?.Currency;
                             txtPaymentNote.Text = item?.Note;
+                            cbbOrderId.Text = item.OrderId.ToString();
                         }
                     }
                 }
@@ -171,5 +207,26 @@ namespace MomAndChildren.WpfApp.UI
             }
         }
 
+        private async void LoadOrders()
+        {
+            var orders = (List<Order>)(await _orderBusiness.GetOrdersAsync()).Data;
+
+            cbbOrderId.ItemsSource = orders;
+            cbbOrderId.IsEnabled = true;
+        }
+
+        public void CheckDateNull(string paymentDate, string createdAt, string updatedAt)
+        {
+            if (paymentDate.IsNullOrEmpty())
+            {
+                MessageBox.Show("paymentDate is required.", "Date Check", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }else if (createdAt.IsNullOrEmpty())
+            {
+                MessageBox.Show("createdDate is required.", "Date Check", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }else if (updatedAt.IsNullOrEmpty())
+            {
+                MessageBox.Show("updatedDate is required.", "Date Check", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
     }
 }

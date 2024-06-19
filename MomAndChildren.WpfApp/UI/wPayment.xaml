@@ -40,9 +40,12 @@
                     <Label Grid.Column="2" Grid.Row="0" Content="Method" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="52" />
                     <TextBox Grid.Row="0" Grid.Column="3" x:Name="txtPaymentMethod" Text="{Binding Path=Payment.PaymentMethod, Mode=TwoWay}"  Margin="0,8,0,8"  Width="192" HorizontalAlignment="Center"/>
                     <Label Grid.Column="4" Grid.Row="0" Content="Status" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="42" />
-                    <ComboBox Grid.Row="0" Grid.Column="5" x:Name="cbbStatus" Text="{Binding Path=Payment.Status, Mode=TwoWay}"  Margin="5,8,0,8"  Width="180" HorizontalAlignment="Left"/>
+                    <ComboBox Grid.Row="0" Grid.Column="5" x:Name="cbbStatus"  Margin="5,8,0,8"  Width="180" HorizontalAlignment="Left">
+                        <ComboBoxItem Content="IsPaid" />
+                        <ComboBoxItem Content="OnHold" />
+                    </ComboBox>
                     <Label Grid.Column="6" Grid.Row="0" Content="OrderId" HorizontalAlignment="Center" VerticalContentAlignment="Center" Width="50" />
-                    <ComboBox Grid.Column="7" Grid.Row="0" x:Name="cbbOrderId" Drop="{Binding Path=Payment.OrderId}"  Margin="19,8,0,7"  Width="151" HorizontalAlignment="Left"/>
+                    <ComboBox Grid.Column="7" Grid.Row="0" x:Name="cbbOrderId" SelectedValuePath="OrderId" DisplayMemberPath="OrderId" SelectedValue="{Binding Path=OrderId, Mode=TwoWay}" Margin="19,8,0,7"  Width="151" HorizontalAlignment="Left"/>
 
                     <Label Grid.Row="1" Content="Payment Date" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="91" />
                     <DatePicker Grid.Column="1" Grid.Row="1" x:Name="dpPaymentDate" Text="{Binding Path=Payment.PaymentDate, Mode=TwoWay}"  Margin="5,8,0,8"  Width="180" HorizontalAlignment="Left"/>
@@ -68,12 +71,32 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Id" Binding="{Binding Path=PaymentId}" Visibility="Visible"/>
                         <DataGridTextColumn Header="Payment Method" Binding="{Binding Path=PaymentMethod}" Width="120"  IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Status" Binding="{Binding Path=Description}" Width="80"  IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Payment Date" Binding="{Binding Path=CreateBy}" Width="150"  IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Billing Address" Binding="{Binding Path=CreateAt}" Width="200"  IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Currency" Binding="{Binding Path=UpdateBy}" Width="100"  IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Created At" Binding="{Binding Path=UpdateAt}" Width="100"  IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Updated At" Binding="{Binding Path=Image}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTemplateColumn Header="Status" Width="80" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="Unknown"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Status}" Value="1">
+                                                        <Setter Property="Text" Value="IsPaid"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Status}" Value="0">
+                                                        <Setter Property="Text" Value="OnHold"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Payment Date" Binding="{Binding Path=PaymentDate}" Width="150"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Billing Address" Binding="{Binding Path=BillingAddress}" Width="200"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Created At" Binding="{Binding Path=CreateAt}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Updated At" Binding="{Binding Path=UpdateAt}" Width="100"  IsReadOnly="True"/>
                         <DataGridTextColumn Header="Note" Binding="{Binding Path=Note}" Width="100"  IsReadOnly="True"/>
                         <DataGridTextColumn Header="OrderId" Binding="{Binding Path=OrderId}" Width="50"  IsReadOnly="True"/>
 
