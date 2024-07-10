@@ -23,38 +23,50 @@ namespace MomAndChildren.RazorWebApp.Pages.PaymentPage
 
         public IActionResult OnGetAsync()
         {
-            ViewData["StatusOptions"] = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "1", Text = "isPaid" },
-                new SelectListItem { Value = "0", Text = "onHold" }
-            };
-            ViewData["OrderId"] = new SelectList((List<Order>)orderBusiness.GetOrdersAsync().Result.Data, "OrderId", "OrderId");
+            PopulateViewData();
             return Page();
         }
 
         [BindProperty]
         public Payment Payment { get; set; } = default!;
-
+        public String Message { get; set; }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
-                ViewData["StatusOptions"] = new List<SelectListItem>
-                {
-                    new SelectListItem { Value = "1", Text = "isPaid" },
-                    new SelectListItem { Value = "0", Text = "onHold" }
-                };
-
-                var orders = orderBusiness.GetOrdersAsync().Result.Data as List<Order>;
-                ViewData["OrderId"] = new SelectList(orders, "OrderId", "OrderId");
-
+                PopulateViewData();
                 return Page();
             }
-            await paymentBusiness.CreatePayment(Payment);
 
-            return RedirectToPage("./Index");
+
+            try
+            {
+                var result = await paymentBusiness.CreatePayment(Payment);
+                PopulateViewData();
+                Message = result.Message;
+            }
+            catch (Exception ex)
+            {
+                PopulateViewData();
+                Message = "Error creating payment";
+            }
+
+            return Page();
+            //return RedirectToPage("./Index");
+        }
+
+        private void PopulateViewData()
+        {
+            ViewData["StatusOptions"] = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "IsPaid" },
+                new SelectListItem { Value = "0", Text = "OnHold" }
+            };
+
+            var orders = orderBusiness.GetOrdersAsync().Result.Data as List<Order>;
+            ViewData["OrderId"] = new SelectList(orders, "OrderId", "OrderId");
         }
     }
 }

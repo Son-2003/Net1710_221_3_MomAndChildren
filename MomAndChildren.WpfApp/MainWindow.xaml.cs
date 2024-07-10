@@ -50,5 +50,12 @@ namespace MomAndChildrenWpfApp
             p.Owner = this;
             p.Show();
         }
+
+        private async void Open_wPayment_Click(object sender, RoutedEventArgs e)
+        {
+            var p = new wPayment();
+            p.Owner = this;
+            p.Show();
+        }
     }
 }

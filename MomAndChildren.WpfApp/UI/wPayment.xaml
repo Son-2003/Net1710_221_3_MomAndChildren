@@ -1,0 +1,115 @@
+﻿<Window x:Class="MomAndChildren.WpfApp.UI.wPayment"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MomAndChildren.WpfApp.UI"
+        mc:Ignorable="d"
+        Title="wPayment" Height="500" Width="1120">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="51*"/>
+            <ColumnDefinition Width="499*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="246*"/>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="232*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical" Grid.RowSpan="3" Grid.ColumnSpan="2">
+            <GroupBox Header="Payment Form" Margin="10">
+                <Grid Height="120">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="101"/>
+                        <ColumnDefinition Width="201"/>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="213"/>
+                        <ColumnDefinition Width="59"/>
+                        <ColumnDefinition Width="197"/>
+                        <ColumnDefinition Width="51"/>
+                        <ColumnDefinition Width="208"/>
+                        <ColumnDefinition Width="0*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Grid.Row="0" Content="Id" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="20" />
+                    <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtPaymentId" Text="{Binding Path=Payment.PaymentId, Mode=TwoWay}"  Margin="5,8,0,8"  Width="180" HorizontalAlignment="Left" IsReadOnly="True"/>
+                    <Label Grid.Column="2" Grid.Row="0" Content="Method" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="52" />
+                    <TextBox Grid.Row="0" Grid.Column="3" x:Name="txtPaymentMethod" Text="{Binding Path=Payment.PaymentMethod, Mode=TwoWay}"  Margin="0,8,0,8"  Width="192" HorizontalAlignment="Center"/>
+                    <Label Grid.Column="4" Grid.Row="0" Content="Status" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="42" />
+                    <ComboBox Grid.Row="0" Grid.Column="5" x:Name="cbbStatus"  Margin="5,8,0,8"  Width="180" HorizontalAlignment="Left">
+                        <ComboBoxItem Content="IsPaid" />
+                        <ComboBoxItem Content="OnHold" />
+                    </ComboBox>
+                    <Label Grid.Column="6" Grid.Row="0" Content="OrderId" HorizontalAlignment="Center" VerticalContentAlignment="Center" Width="50" />
+                    <ComboBox Grid.Column="7" Grid.Row="0" x:Name="cbbOrderId" SelectedValuePath="OrderId" DisplayMemberPath="OrderId" SelectedValue="{Binding Path=OrderId, Mode=TwoWay}" Margin="19,8,0,7"  Width="151" HorizontalAlignment="Left"/>
+
+                    <Label Grid.Row="1" Content="Payment Date" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="91" />
+                    <DatePicker Grid.Column="1" Grid.Row="1" x:Name="dpPaymentDate" Text="{Binding Path=Payment.PaymentDate, Mode=TwoWay}"  Margin="5,8,0,8"  Width="180" HorizontalAlignment="Left"/>
+                    <Label Grid.Column="2" Grid.Row="1" Content="Billing Address" HorizontalAlignment="Center" VerticalContentAlignment="Center" Width="90" />
+                    <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtBillingAddress" Text="{Binding Path=Payment.BillingAddress, Mode=TwoWay}"  Margin="0,8,0,8"  Width="192" HorizontalAlignment="Center"/>
+                    <Label Grid.Column="4" Grid.Row="1" Content="Currency" HorizontalAlignment="Center" VerticalContentAlignment="Center" Width="59" />
+                    <TextBox Grid.Column="5" Grid.Row="1" x:Name="txtCurrency" Text="{Binding Path=Payment.Currency, Mode=TwoWay}"  Margin="5,8,0,8"  Width="180" HorizontalAlignment="Left"/>
+
+                    <Label Grid.Column="0" Grid.Row="2" Content="Created At" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="66" />
+                    <DatePicker Grid.Column="1" Grid.Row="2" x:Name="dpPaymentCreatedAt" Text="{Binding Path=Payment.CreateAt, Mode=TwoWay}" Margin="5,8,0,8"  Width="180" HorizontalAlignment="Left"/>
+                    <Label Grid.Column="2" Grid.Row="2" Content="Updated At" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="71" />
+                    <DatePicker Grid.Column="3" Grid.Row="2" x:Name="dpPaymentUpdatedAt" Text="{Binding Path=Payment.UpdateAt, Mode=TwoWay}" Margin="0,8,0,8"  Width="192" HorizontalAlignment="Center"/>
+                    <Label Grid.Column="4" Grid.Row="2" Content="Note" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="36" />
+                    <TextBox Grid.Column="5" Grid.Row="2" x:Name="txtPaymentNote" Text="{Binding Path=Payment.Note, Mode=TwoWay}"  Margin="5,8,0,8"  Width="180" HorizontalAlignment="Left"/>
+                </Grid>
+            </GroupBox>
+            <StackPanel Height="40" Orientation="Horizontal" HorizontalAlignment="Right" Width="170">
+                <Button x:Name="ButtonSave" Content="Save" Height="30" Width="80" Click="ButtonSave_Click"/>
+                <Button x:Name="ButtonCancel" Content="Cancel" Height="30" Width="80" Click="ButtonCancel_Click"/>
+            </StackPanel>
+            <StackPanel Height="271">
+                <DataGrid x:Name="grdPayment" AutoGenerateColumns="False" ItemsSource="{Binding Payment}" CanUserAddRows="False" Height="252" Margin="10" MouseDoubleClick="grdPayment_MouseDouble_Click" SelectionMode="Single" SelectionUnit="FullRow" Width="1100">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Id" Binding="{Binding Path=PaymentId}" Visibility="Visible"/>
+                        <DataGridTextColumn Header="Payment Method" Binding="{Binding Path=PaymentMethod}" Width="120"  IsReadOnly="True"/>
+                        <DataGridTemplateColumn Header="Status" Width="80" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="Unknown"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Status}" Value="1">
+                                                        <Setter Property="Text" Value="IsPaid"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Status}" Value="0">
+                                                        <Setter Property="Text" Value="OnHold"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Payment Date" Binding="{Binding Path=PaymentDate}" Width="150"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Billing Address" Binding="{Binding Path=BillingAddress}" Width="200"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Created At" Binding="{Binding Path=CreateAt}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Updated At" Binding="{Binding Path=UpdateAt}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Note" Binding="{Binding Path=Note}" Width="100"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="OrderId" Binding="{Binding Path=OrderId}" Width="50"  IsReadOnly="True"/>
+
+                        <DataGridTemplateColumn Width="50">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="X" x:Name="ButtonDelete" CommandParameter="{Binding Path=PaymentId}" Click="grdPayment_ButtonDelete_Click"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

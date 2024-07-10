@@ -13,17 +13,18 @@ namespace MomAndChildren.RazorWebApp.Pages.PaymentPage
 {
     public class EditModel : PageModel
     {
-        private readonly IPaymentBusiness PaymentBusiness;
+        private readonly IPaymentBusiness paymentBusiness;
         private readonly IOrderBusiness orderBusiness;
 
         public EditModel()
         {
             orderBusiness ??= new OrderBusiness();
-            PaymentBusiness ??= new PaymentBusiness();
+            paymentBusiness ??= new PaymentBusiness();
         }
 
         [BindProperty]
         public Payment Payment { get; set; } = default!;
+        public String Message {get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -32,13 +33,13 @@ namespace MomAndChildren.RazorWebApp.Pages.PaymentPage
                 return NotFound();
             }
 
-            var payment = await PaymentBusiness.GetPaymentByIdAsync((int)id);
+            var payment = await paymentBusiness.GetPaymentByIdAsync((int)id);
             if (payment == null)
             {
                 return NotFound();
             }
 
-            ViewData["OrderId"] = new SelectList((List<Order>)orderBusiness.GetOrdersAsync().Result.Data, "OrderId", "OrderId", "selectedValue");
+            PopulateViewData();
             Payment = (Payment)payment.Data;
 
             return Page();
@@ -50,6 +51,8 @@ namespace MomAndChildren.RazorWebApp.Pages.PaymentPage
         {
             if (!ModelState.IsValid)
             {
+                PopulateViewData();
+
                 return Page();
             }
 
@@ -57,14 +60,29 @@ namespace MomAndChildren.RazorWebApp.Pages.PaymentPage
 
             try
             {
-                await PaymentBusiness.UpdatePayment(Payment);
+                var result = await paymentBusiness.UpdatePayment(Payment);
+                PopulateViewData();
+                Message = result.Message;
             }
             catch (Exception ex)
             {
-
+                PopulateViewData();
+                Message = "Error updating payment";
             }
 
-            return RedirectToPage("./Index");
+            return Page();
+        }
+
+        private void PopulateViewData()
+        {
+            ViewData["StatusOptions"] = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "IsPaid" },
+                new SelectListItem { Value = "0", Text = "OnHold" }
+            };
+
+            var orders = orderBusiness.GetOrdersAsync().Result.Data as List<Order>;
+            ViewData["OrderId"] = new SelectList(orders, "OrderId", "OrderId");
         }
 
         //private bool PaymentExists(int id)
