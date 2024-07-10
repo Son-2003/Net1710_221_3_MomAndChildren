@@ -7,28 +7,28 @@ using MomAndChildren.Data.Models;
 
 namespace MomAndChildren.RazorWebApp.Pages
 {
-    public class PaymentHistoryModel : PageModel
+    public class PaymentModel : PageModel
     {
 
-        private readonly IPaymentHistoryBusiness _paymentHistoryBusiness;
+        private readonly IPaymentBusiness _paymentBusiness;
         private readonly IOrderBusiness _orderBusiness;
 
-        public PaymentHistoryModel(IPaymentHistoryBusiness paymentHistoryBusiness, IOrderBusiness orderBusiness)
+        public PaymentModel(IPaymentBusiness paymentBusiness, IOrderBusiness orderBusiness)
         {
-            _paymentHistoryBusiness = paymentHistoryBusiness;
+            _paymentBusiness = paymentBusiness;
             _orderBusiness = orderBusiness;
         }
 
 
         [BindProperty]
         public Payment Payment { get; set; }
-        public List<Payment> PaymentHistories { get; set; }
+        public List<Payment> PaymentList { get; set; }
         public List<SelectListItem> OrderList { get; set; }
         public string? Message { get; set; }
 
         public void OnGet()
         {
-            PaymentHistories = this.GetPaymentHistories();
+            PaymentList = this.GetPaymentList();
             OrderList = this.GetOrders();
         }
 
@@ -66,9 +66,9 @@ namespace MomAndChildren.RazorWebApp.Pages
             return orders;
         }
 
-        private List<Payment> GetPaymentHistories()
+        private List<Payment> GetPaymentList()
         {
-            var result = _paymentHistoryBusiness.GetPaymentHistoryList();
+            var result = _paymentBusiness.GetPaymentList();
 
             if (result.Status > 0 && result.Result.Data != null)
             {
@@ -80,7 +80,7 @@ namespace MomAndChildren.RazorWebApp.Pages
 
         private void CreatePayment()
         {
-            var result = _paymentHistoryBusiness.CreatePaymentHistory(Payment);
+            var result = _paymentBusiness.CreatePayment(Payment);
 
             if (result != null)
             {
@@ -93,7 +93,7 @@ namespace MomAndChildren.RazorWebApp.Pages
         }
         private void UpdatePayment()
         {
-            var result = _paymentHistoryBusiness.UpdatePayment(Payment);
+            var result = _paymentBusiness.UpdatePayment(Payment);
 
             if (result != null)
             {
@@ -107,7 +107,7 @@ namespace MomAndChildren.RazorWebApp.Pages
 
         private void DeletePayment(int paymentId)
         {
-            var result = _paymentHistoryBusiness.RemovePayment(paymentId);
+            var result = _paymentBusiness.RemovePayment(paymentId);
 
             if (result != null)
             {

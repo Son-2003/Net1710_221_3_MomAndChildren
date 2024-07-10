@@ -1,0 +1,106 @@
+﻿@page
+@model MomAndChildren.RazorWebApp.Pages.PaymentPage.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+
+<form method="get">
+    <div class="form-group">
+        <label for="searchTerm">Search Payment:</label>
+        <input style="margin: 0 15px 0 10px" type="text" class="form-control" id="searchTerm" 
+               name="searchTerm" placeholder="Enter Method or BillingAddress or Note or Currency">
+        <div class="padding: 5px 0px">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment.First().PaymentMethod)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment.First().Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment.First().PaymentDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment.First().CreateAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment.First().UpdateAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment.First().Note)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment.First().BillingAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment.First().Currency)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment.First().Order)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Payment) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentMethod)
+            </td>
+            <td>
+                @(Model.Payment.First().Status == 1 ? "IsPaid" : "OnHold")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdateAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BillingAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Currency)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Order.OrderId)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.PaymentId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.PaymentId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.PaymentId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+            <a class="page-link" href="@Url.Page("Index", new { currentPage = Model.CurrentPage - 1 })" tabindex="-1" aria-disabled="@(Model.CurrentPage == 1)">Previous</a>
+        </li>
+        <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+            <a class="page-link" href="@Url.Page("Index", new { currentPage = Model.CurrentPage + 1 })">Next</a>
+        </li>
+    </ul>
+</nav>
