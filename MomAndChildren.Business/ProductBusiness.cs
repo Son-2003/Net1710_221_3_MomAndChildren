@@ -124,7 +124,7 @@ namespace MomAndChildren.Business
         {
             try
             {
-                var products = await _unitOfWork.ProductRepository.GetAllAsync();
+                var products = _unitOfWork.ProductRepository.getProductsAsync();
                 var result = products.Where(c => c.ProductName.ToLower().Contains(searchTerm.ToLower())
                     || c.Description.ToLower().Contains(searchTerm.ToLower())
                     ).ToList();
